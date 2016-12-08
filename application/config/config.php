@@ -14,7 +14,7 @@
 | and path to your installation. However, you should always configure this
 | explicitly and never rely on auto-guessing, especially in production
 | environments.
-|
+| doni
 */
 $root=(isset($_SERVER['HTTPS']) ? "https://" : "http://").$_SERVER['HTTP_HOST'];
 $root.= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
