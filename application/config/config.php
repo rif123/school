@@ -16,8 +16,7 @@
 | environments.
 |
 */
-$config['base_url'] = 'http://localhost/i-fish';
-
+$config['base_url'] = 'http://localhost/sch';
 /*
 |--------------------------------------------------------------------------
 | Index File
