@@ -18,14 +18,14 @@ class model_education extends CI_Model {
        $query  = $this->db->query($q);
         return $query->result();
     }
-    
+
     public function getOne() {
         $this->db->select('education_id, detail')
                 ->from('education');
         $query = $this->db->get();
         return $query->row();
     }
-    
+
     public function getById($id) {
         $this->db->select('education_id, detail')
                 ->from('education')
@@ -33,13 +33,13 @@ class model_education extends CI_Model {
                 ->limit(1);
         $query = $this->db->get();
         return $query->result();
-    } 
-  
+    }
+
     public function edit($id, $data) {
         $this->db->where('education_id', $id);
         $this->db->update('education', $data);
     }
-    
+
     public function delete($id) {
         $this->db->where('education_id', $id);
         $this->db->delete('education');

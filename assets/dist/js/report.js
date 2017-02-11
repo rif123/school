@@ -10,10 +10,10 @@ function Report(){
     this.otherFilter = otherReportFilter;
 }
 
-function initReportDT(globalUsername){  
+function initReportDT(globalUsername){
     $('#dt-report').append('<tfoot><tr><th colspan="8"><center>Total</center></th><th></th></tr></tfoot>');
     dt_report = $('#dt-report').DataTable({
-        ajax : base_url+'report/getOther',       
+        ajax : base_url+'report/getOther',
         dom: 'Bfrtip', //B -> Button
         buttons: [
             {
@@ -25,14 +25,14 @@ function initReportDT(globalUsername){
             },
             {
                 text: '<i class="fa fa-print"></i> Export excel',
-                className: 'btn btn-default',                
-                action: function ( e, dt, node, config ) {    
+                className: 'btn btn-default',
+                action: function ( e, dt, node, config ) {
                     var tempReport = [];
-                    var d = new Date();    
+                    var d = new Date();
                     var thead = $('#dt-report thead').html();
                     var tbody = $('#dt-report tbody').html();
                     var tfoot = $('#dt-report tfoot').html();
-                        
+
                     $(tbody).each(function(i, v){
                         var find = false;
                         $(tempReport).each(function(j, w){
@@ -41,7 +41,7 @@ function initReportDT(globalUsername){
                                 return false;
                             }
                         });
-                            
+
                         if (find===false) {
                             tempReport.push({
                                 'payment_type': 'Lain-lain',
@@ -49,93 +49,93 @@ function initReportDT(globalUsername){
                                 'count':0,
                                 'total':0
                             });
-                        }                            
+                        }
                         //                            console.log($(v).find('td:eq(0)').html());
                     });
-                    
+
                     $(tbody).each(function(i, v){
-                        var tdMaxIndex = $(v).find("td").length-1;                                                                                    
-                        $(tempReport).each(function(j, w){                               
+                        var tdMaxIndex = $(v).find("td").length-1;
+                        $(tempReport).each(function(j, w){
                             if($(v).find('td:eq(0)').html().toString().trim().toUpperCase() === w.education.toString().trim().toUpperCase()){
                                 w['count'] += 1;
-                                w['total'] += parseInt($(v).find('td:eq('+tdMaxIndex+')').html().toString().trim());                                    
-                                return false;                                    
-                            }                                
+                                w['total'] += parseInt($(v).find('td:eq('+tdMaxIndex+')').html().toString().trim());
+                                return false;
+                            }
                         });
                     });
-                    
+
                     var tCount = 0;
                     var tTotal = 0;
-                        
-                    $(tempReport).each(function(j, w){                               
+
+                    $(tempReport).each(function(j, w){
                         tCount += w.count;
-                        tTotal += w.total;                            
+                        tTotal += w.total;
                     });
-                        
+
                     tempReport.push({
                         'payment_type': '',
                         'education':'',
                         'count':tCount,
                         'total':tTotal
                     });
-                    
-                    tTotal = 0;                
-                    $(tbody).each(function(i, v){                            
+
+                    tTotal = 0;
+                    $(tbody).each(function(i, v){
                         tempReport.push({
                                 'payment_type': $(v).find('td:eq(5)').html(),
                                 'education': $(v).find('td:eq(3)').html(),
                                 'count':$(v).find('td:eq(0)').html(),
                                 'total':parseInt($(v).find('td:eq(6)').html())
                             });
-                            tTotal += parseInt($(v).find('td:eq(6)').html());                           
+                            tTotal += parseInt($(v).find('td:eq(6)').html());
                     });
-                    
+
                     tempReport.push({
                         'payment_type': '',
                         'education':'',
                         'count':tCount,
                         'total':tTotal
                     });
-                        
-                    $(tempReport).each(function(j, w){                               
+
+                    $(tempReport).each(function(j, w){
                         //console.log(w);
                     });
                     var dataNow = getDateJs();
                     var html = "";
-                    
+
                      // header
                         html += "<tr>";
-                            html += "<th colspan='5' style='font-size:18px;'>Laporan Pembayaran SPP  Tanggal "+dataNow+"</th>";                          
+                            html += "<th colspan='5' style='font-size:18px;'>Laporan Pembayaran SPP  Tanggal "+dataNow+"</th>";
                         html += "</tr>";
-                        
+
                         html += "<tr>";
-                            html += "<th colspan='5'></th>";                          
+                            html += "<th colspan='5'></th>";
                         html += "</tr>";
                     // header
-                    
+
                     html += "<tr>";
                     html += "<th style='border:1px solid black; font-size:16px'>Payment</th>";
                     html += "<th style='border:1px solid black; font-size:16px'>Education</th>";
                     html += "<th style='border:1px solid black; font-size:16px'>QTY</th>";
                     html += "<th style='border:1px solid black; font-size:16px'>Total</th>";
                     html += "</tr>";
-                    $(tempReport).each(function(j, w){  
+                    $(tempReport).each(function(j, w){
                         if (w.education==="") {
                             html += "<tr>";
-                            html += "<td colspan='3' style='border:1px solid black; font-size:16px'><center><b>Total</b></center></td>";                                
+                            html += "<td colspan='3' style='border:1px solid black; font-size:16px'><center><b>Total</b></center></td>";
                             html += "<td style='border:1px solid black; font-size:16px'>"+w.total+"</td>";
-                            html += "</tr>";                                                   
+                            html += "</tr>";
                         }else{
                             html += "<tr>";
                             html += "<td style='border:1px solid black; font-size:16px'>"+w.payment_type+"</td>";
                             html += "<td style='border:1px solid black; font-size:16px'>"+w.education+"</td>";
                             html += "<td style='border:1px solid black; font-size:16px'>"+w.count+"</td>";
                             html += "<td style='border:1px solid black; font-size:16px'>"+w.total+"</td>";
-                            html += "</tr>";                                                   
+                            html += "</tr>";
                         }
                     });
-                    
-                    
+
+
                      // footer
                             html += "<tr>";
                                 html += "<td></td>";
@@ -143,45 +143,45 @@ function initReportDT(globalUsername){
                                 html += "<td></td>";
                                 html += "<td></td>";
                             html += "</tr>";
-                            
+
                             html += "<tr>";
                                 html += "<td></td>";
                                 html += "<td></td>";
                                 html += "<td></td>";
                                 html += "<td>Dibuat Oleh</td>";
-                            html += "</tr>";     
-                            
+                            html += "</tr>";
+
                             html += "<tr>";
                                 html += "<td></td>";
                                 html += "<td></td>";
                                 html += "<td></td>";
                                 html += "<td></td>";
                             html += "</tr>";
-                            
+
                             html += "<tr>";
                                 html += "<td></td>";
                                 html += "<td></td>";
                                 html += "<td></td>";
                                 html += "<td></td>";
-                            html += "</tr>";  
-                            
+                            html += "</tr>";
+
                             html += "<tr>";
                                 html += "<td></td>";
                                 html += "<td></td>";
                                 html += "<td></td>";
                                 html += "<td>"+globalUsername+"</td>";
-                            html += "</tr>";   
-                         
+                            html += "</tr>";
+
                         // footer
-                        
-                        
+
+
                     $('.table-print').html(html);
                     //                        $('.table-print').html(thead+tbody+tfoot);
                     $("#table-print").table2excel({
                         exclude: ".table-print",
                         name: "Worksheet Name",
                         filename: "Other Report "+ d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) //do not include extension
-                    });                        
+                    });
                 }
                 //                extend: 'csv',
                 //                exportOptions: {
@@ -215,15 +215,15 @@ function initReportDT(globalUsername){
             }, {
                 "data" : "payment_type_detail"
             }, {
-                "data" : "pmt_date"            
+                "data" : "pmt_date"
             }, {
-                "data" : "pmt_status"            
+                "data" : "pmt_status"
             }, {
                 "data" : "payment_total"
             }
         ],
         drawCallback: function( settings ) {
-            var api = this.api();            
+            var api = this.api();
             var intVal = function ( i ) {
                 return typeof i === 'string' ?
                 i.replace(/[\$,]/g, '')*1 :
@@ -232,16 +232,16 @@ function initReportDT(globalUsername){
             };
             var total = api.column(8).data().reduce( function (a, b) {
                 return intVal(a) + intVal(b);
-            }, 0 );           
-            
+            }, 0 );
+
             var pageTotal = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {
                 return intVal(a) + intVal(b);
             }, 0 );
-            
-            $('#dt-report tfoot th:last-child').html(pageTotal); 
+
+            $('#dt-report tfoot th:last-child').html(pageTotal);
         },
-        footerCallback: function ( row, data, start, end, display ) {            
-            var api = this.api();            
+        footerCallback: function ( row, data, start, end, display ) {
+            var api = this.api();
             var intVal = function ( i ) {
                 return typeof i === 'string' ?
                 i.replace(/[\$,]/g, '')*1 :
@@ -254,34 +254,34 @@ function initReportDT(globalUsername){
             var pageTotal = api.column(8, { page: 'current'} ).data().reduce( function (a, b) {
                 return intVal(a) + intVal(b);
             }, 0 );
-            
-            $('#dt-report tfoot th:last-child').html(pageTotal); 
+
+            $('#dt-report tfoot th:last-child').html(pageTotal);
         },
         pageLength : -1,
         order: [[ 8, 'asc' ]]
-    });                 
-    
+    });
+
     $.fn.dataTable.ext.search.push(function( settings, data, dataIndex ) {
         var min = new Date($('#form-other-filter input[name=start_date]').val());
         var max = new Date($('#form-other-filter input[name=finish_date]').val());
         var value = new Date(data[6]); // use data for the age column
- 
+
         if ((isNaN(min) && isNaN(max)) || (isNaN(min) && value <= max ) || ( min <= value   && isNaN( max ) ) ||( min <= value   && value <= max ) ){
             return true;
         }
         return false;
-    });    
+    });
 }
 
 function getReportClass(element){
-    ajaxPro('POST', base_url+'classes/getAll', null, 'json', false, false, false, false, success, success, null);          
-    function success(output) {                  
+    ajaxPro('POST', base_url+'classes/getAll', null, 'json', false, false, false, false, success, success, null);
+    function success(output) {
         var html = '<option value=""> - </option>';
-        $(output.data).each(function(i, v){                        
-            html += '<option value="'+v.detail+'">'+v.detail+'</option>'; 
-        });        
+        $(output.data).each(function(i, v){
+            html += '<option value="'+v.detail+'">'+v.detail+'</option>';
+        });
         $(element).html(html);
-    } 
+    }
 }
 
 function getDateJs(){
@@ -292,42 +292,42 @@ function getDateJs(){
 
     if(dd<10) {
         dd='0'+dd
-    } 
+    }
 
     if(mm<10) {
         mm='0'+mm
-    } 
+    }
 
     today = dd+'-'+mm+'-'+yyyy;
     return today;
 }
 
 function getReportEducation(element){
-    ajaxPro('POST', base_url+'education/getAll', null, 'json', false, false, false, false, success, success, null);          
-    function success(output) {                  
+    ajaxPro('POST', base_url+'education/getAllNew', null, 'json', false, false, false, false, success, success, null);
+    function success(output) {
         var html = '<option value=""> - </option>';
-        $(output.data).each(function(i, v){                        
-            html += '<option value="'+v.detail+'">'+v.detail+'</option>'; 
-        });        
+        $(output.data).each(function(i, v){
+            html += '<option value="'+v.nameEdu+'">'+v.nameEdu+'</option>';
+        });
         $(element).html(html);
-    }  
+    }
 }
 
 function getReportPaymentType(element){
-    ajaxPro('POST', base_url+'payment_type/getAllGrouped', null, 'json', false, false, false, false, success, success, null);          
-    function success(output) {                  
+    ajaxPro('POST', base_url+'payment_type/getAllGrouped', null, 'json', false, false, false, false, success, success, null);
+    function success(output) {
         var html = '<option value=""> - </option>';
-        $(output.data).each(function(i, v){                        
-            html += '<option value="'+v.detail+'">'+v.detail+'</option>'; 
-        });        
+        $(output.data).each(function(i, v){
+            html += '<option value="'+v.detail+'">'+v.detail+'</option>';
+        });
         $(element).html(html);
-    }  
+    }
 }
 
 function initReportDRP(element){
-    $(element).daterangepicker({        
+    $(element).daterangepicker({
         "singleDatePicker": true,
-        "showDropdowns": true,        
+        "showDropdowns": true,
         locale: {
             format: 'YYYY-MM-DD',
             cancelLabel:'Reset'
@@ -344,7 +344,7 @@ function resetReportField(trigger, target){
 
 function otherReportFilter(){
     $('#form-other-filter').submit(function (event) {
-        event.preventDefault();                    
+        event.preventDefault();
         var education = $('#form-other-filter select[name=education]').val();
         var classes = $('#form-other-filter select[name=class]').val();
         var status = $('#form-other-filter select[name=status]').val();
@@ -352,10 +352,10 @@ function otherReportFilter(){
         dt_report.column(0).search(education);
         dt_report.column(1).search(classes);
         dt_report.column(5).search(payment_type);
-        dt_report.column(7).search(status);         
+        dt_report.column(7).search(status);
         dt_report.draw();
         dt_report.ajax.reload();
         $('#other-report-filter').modal('hide');
         return false;
-    });   
+    });
 }
