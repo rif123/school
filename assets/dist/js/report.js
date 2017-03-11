@@ -180,7 +180,7 @@ function initReportDT(globalUsername){
                     $("#table-print").table2excel({
                         exclude: ".table-print",
                         name: "Worksheet Name",
-                        filename: "Other Report "+ d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) //do not include extension
+                        filename: "Other Report "+ d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds())+".xls" //do not include extension
                     });
                 }
                 //                extend: 'csv',
