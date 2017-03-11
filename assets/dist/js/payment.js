@@ -29,7 +29,7 @@ function initPaymentDT(){
                 text: '<i class="fa fa-arrow-left"></i> Back',
                 className: 'btn btn-default',
                 action: function ( e, dt, node, config ) {
-                    window.location.href = base_url+"student";         
+                    window.location.href = base_url+"student";
                 }
             },
             {
@@ -143,25 +143,14 @@ function initPaymentDT(){
 function getRevisionPayment(i){
     var payment_type_id = $(i).val();
     var student_id = $('#student_id').html();
+    var url = base_url+'payment_revision';
+    $('<form>', {
+    "id": "getInvoiceImage",
+    "html": '<input type="hidden" id="student_id" name="student_id" value="' + student_id + '" /> <input type="hidden" id="student_id" name="payment_type_id" value="' + payment_type_id + '" />',
+    "method": 'post',
+    "action": url
+    }).appendTo(document.body).submit();
 
-    var form = document.createElement('form');
-    form.action = base_url+'payment_revision';
-    form.method = 'post';
-
-    var input1 = document.createElement('input');
-    input1.type = 'hidden';
-    input1.name = 'student_id';
-    input1.value = student_id;
-
-    var input2 = document.createElement('input');
-    input2.type = 'hidden';
-    input2.name = 'payment_type_id';
-    input2.value = payment_type_id;
-
-    form.appendChild(input1);
-    form.appendChild(input2);
-
-    form.submit();
 }
 
 function getPrintPayment(i){
