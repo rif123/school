@@ -47,6 +47,48 @@ class model_student extends CI_Model {
         }
         return $query->result();
     }
+    public function getAllNewLimit() {
+        if (empty($_GET['findName'])){
+            $q = '
+            Select std.*, gdr.detail as "gender_detail",
+            case
+            when class_id IS NULL then "-"
+            else (select class.detail from class
+                where class.class_id = std.class_id limit 1) end as "class_detail",
+            case when education_id IS NULL then "-"
+            else (select education.detail from education where education.education_id = std.education_id limit 1)
+            end as "education_detail", prd.detail as "period_detail"
+            from student std
+            join gender gdr on std.gender_id = gdr.gender_id
+            join period prd on std.period_id = prd.period_id
+            limit 0, 100
+            ';
+            $query = $this->db->query($q);
+            // $query = $this->db->query('Select std.*, gdr.detail as "gender_detail", case when class_id IS NULL then "-" else (select class.detail from class where class.class_id = std.class_id limit 1) end as "class_detail", case when education_id IS NULL then "-" else (select education.detail from education where education.education_id = std.education_id limit 1) end as "education_detail", prd.detail as "period_detail" from student std join gender gdr on std.gender_id = gdr.gender_id join period prd on std.period_id = prd.period_id
+
+            //     ');
+        }else{
+            $query = $this->db->query(' select * from (
+                         Select std.*, gdr.detail as "gender_detail",
+                            case
+                                when class_id IS NULL then "-"
+                                else (select class.detail from class where class.class_id = std.class_id limit 1)
+                            end as
+                            "class_detail",
+                            case
+                            when education_id
+                            IS NULL
+                                then "-" else (select education.detail from education where education.education_id = std.education_id limit 1)
+                                end as "education_detail", prd.detail as "period_detail"
+                            from student std
+                            join gender gdr on std.gender_id = gdr.gender_id
+                            join period prd on std.period_id = prd.period_id
+
+                        ) as xx
+                        where SUBSTR(education_detail, LOCATE(" ", education_detail)+1, LENGTH(education_detail )) = "'.$_GET['findName'].'"');
+        }
+        return $query->result();
+    }
 
     public function getById($id) {
         $query = $this->db->query('Select std.* from student std join gender gdr on std.gender_id = gdr.gender_id where std.student_id = "'.$id.'"');

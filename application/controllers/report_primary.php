@@ -100,7 +100,7 @@ class Report_primary extends CI_Controller {
 
                 foreach ($q1 as $r1)
                 {
-                    if($q2 = $this->model_student->getAll())
+                    if($q2 = $this->model_student->getAllNewLimit())
                     {
                         foreach ($q2 as $r2)
                         {
@@ -170,7 +170,7 @@ class Report_primary extends CI_Controller {
                 $first = array();
                 foreach ($q1 as $r1)
                 {
-                    if($q2 = $this->model_student->getAll())
+                    if($q2 = $this->model_student->getAllNewLimit())
                     {
                         // echo "<pre>";
                         // print_R ($_GET);die;
