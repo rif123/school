@@ -8,7 +8,7 @@ function Language(){
 
 function initLanguageDT(){
     dt_language = $('#dt-language').DataTable({
-        ajax : '../l-fis/language/getAll',
+        ajax : base_url+'language/getAll',
         dom: 'lfrtip', //B -> Button
         //        buttons: [
         //            'copy', 'csv', 'excel', 'pdf', 'print'
@@ -64,12 +64,12 @@ function inputTypeLanguage(){
             var id_length = $('#form-language input[name=language_id]').val().split('').length;
             var formData = new FormData($(this)[0]);                
             if (id_length>0) {
-                ajaxPro('POST', '/l-fis/language/edit', formData, 'html', false, false, false, false, success, success, null);          
+                ajaxPro('POST', base_url+'language/edit', formData, 'html', false, false, false, false, success, success, null);          
             }else{
                 var d = new Date();         
                 var language_id = '123'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) + (Math.floor(Math.random() * (99 - 10) + 10));    
                 formData.append('language_id', language_id);                        
-                ajaxPro('POST', '/l-fis/language/insert', formData, 'html', false, false, false, false, success, success, null);   
+                ajaxPro('POST', base_url+'language/insert', formData, 'html', false, false, false, false, success, success, null);   
             }
             function success(output) {            
                 dt_language.ajax.reload();
@@ -86,7 +86,7 @@ function getEditLanguage(i){
     var language_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('language_id', language_id);                        
-    ajaxPro('POST', '/l-fis/language/getById', formData, 'json', false, false, false, false, success, success, null);              
+    ajaxPro('POST', base_url+'language/getById', formData, 'json', false, false, false, false, success, success, null);              
     function success(output) {           
         $('#form-language .form-group').each(function(i, v){
             var element = $(this).children().eq('1').prop("tagName").toString().toLowerCase();            
@@ -101,7 +101,7 @@ function getDeleteLanguage(i){
     var language_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('language_id', language_id);                        
-    ajaxPro('POST', '/l-fis/language/delete', formData, 'html', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'language/delete', formData, 'html', false, false, false, false, success, success, null);          
     function success(output) {   
         dt_language.ajax.reload();
         notify('info', output, null);

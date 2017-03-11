@@ -8,7 +8,7 @@ function HistoryType(){
 
 function initHistoryTypeDT(){
     dt_history_type = $('#dt-history-type').DataTable({
-        ajax : '../l-fis/history_type/getAll',
+        ajax : base_url+'history_type/getAll',
         dom: 'lfrtip', //B -> Button
         //        buttons: [
         //            'copy', 'csv', 'excel', 'pdf', 'print'
@@ -64,12 +64,12 @@ function inputTypeHistoryType(){
             var id_length = $('#form-history-type input[name=history_type_id]').val().split('').length;
             var formData = new FormData($(this)[0]);                
             if (id_length>0) {
-                ajaxPro('POST', '/l-fis/history_type/edit', formData, 'html', false, false, false, false, success, success, null);          
+                ajaxPro('POST', base_url+'history_type/edit', formData, 'html', false, false, false, false, success, success, null);          
             }else{
                 var d = new Date();         
                 var history_type_id = '119'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) + (Math.floor(Math.random() * (99 - 10) + 10));    
                 formData.append('history_type_id', history_type_id);                        
-                ajaxPro('POST', '/l-fis/history_type/insert', formData, 'html', false, false, false, false, success, success, null);          
+                ajaxPro('POST', base_url+'history_type/insert', formData, 'html', false, false, false, false, success, success, null);          
             }
             function success(output) {            
                 dt_history_type.ajax.reload();
@@ -86,7 +86,7 @@ function getEditHistoryType(i){
     var history_type_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('history_type_id', history_type_id);                        
-    ajaxPro('POST', '/l-fis/history_type/getById', formData, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'history_type/getById', formData, 'json', false, false, false, false, success, success, null);          
     function success(output) {   
         $('#form-history-type .form-group').each(function(i, v){
             var element = $(this).children().eq('1').prop("tagName").toString().toLowerCase();            
@@ -101,7 +101,7 @@ function getDeleteHistoryType(i){
     var history_type_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('history_type_id', history_type_id);                        
-    ajaxPro('POST', '/l-fis/history_type/delete', formData, 'html', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'history_type/delete', formData, 'html', false, false, false, false, success, success, null);          
     function success(output) {   
         dt_history_type.ajax.reload();
         notify('info', output, null);

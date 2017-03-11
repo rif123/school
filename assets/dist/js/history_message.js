@@ -10,7 +10,7 @@ function HistoryMessage(){
 
 function initHistoryMessageDT(){
     dt_history_message = $('#dt-history-message').DataTable({
-        ajax : '../l-fis/history_message/getAll',
+        ajax : base_url+'history_message/getAll',
         dom: 'lfrtip', //B -> Button
         //        buttons: [
         //            'copy', 'csv', 'excel', 'pdf', 'print'
@@ -47,7 +47,7 @@ function initHistoryMessageDT(){
 }
 
 function getAllHM_HistoryType(){
-    ajaxPro('POST', '/l-fis/history_type/getAll', null, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'history_type/getAll', null, 'json', false, false, false, false, success, success, null);          
     function success(output) {          
         var html = '';
         $(output.data).each(function(i, v){                        
@@ -58,7 +58,7 @@ function getAllHM_HistoryType(){
 }
 
 function getAllHM_Language(){
-    ajaxPro('POST', '/l-fis/language/getAll', null, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'language/getAll', null, 'json', false, false, false, false, success, success, null);          
     function success(output) {          
         var html = '';
         $(output.data).each(function(i, v){                        
@@ -92,12 +92,12 @@ function inputTypeHistoryMessage(){
             var id_length = $('#form-history-message input[name=history_message_id]').val().split('').length;
             var formData = new FormData($(this)[0]);                
             if (id_length>0) {                
-                ajaxPro('POST', '/l-fis/history_message/edit', formData, 'html', false, false, false, false, success, success, null);          
+                ajaxPro('POST', base_url+'history_message/edit', formData, 'html', false, false, false, false, success, success, null);          
             }else{                
                 var d = new Date();         
                 var history_message_id = '118'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) + (Math.floor(Math.random() * (99 - 10) + 10));    
                 formData.append('history_message_id', history_message_id);                        
-                ajaxPro('POST', '/l-fis/history_message/insert', formData, 'html', false, false, false, false, success, success, null);  
+                ajaxPro('POST', base_url+'history_message/insert', formData, 'html', false, false, false, false, success, success, null);  
             }
             function success(output) {            
                 dt_history_message.ajax.reload();
@@ -114,7 +114,7 @@ function getEditHistoryMessage(i){
     var history_message_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('history_message_id', history_message_id);                        
-    ajaxPro('POST', '/l-fis/history_message/getById', formData, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'history_message/getById', formData, 'json', false, false, false, false, success, success, null);          
     function success(output) {           
         $('#form-history-message .form-group').each(function(i, v){
             var element = $(this).children().eq('1').prop("tagName").toString().toLowerCase();            
@@ -129,7 +129,7 @@ function getDeleteHistoryMessage(i){
     var history_message_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('history_message_id', history_message_id);                        
-    ajaxPro('POST', '/l-fis/history_message/delete', formData, 'html', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'history_message/delete', formData, 'html', false, false, false, false, success, success, null);          
     function success(output) {   
         dt_history_message.ajax.reload();
         notify('info', output, null);

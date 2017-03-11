@@ -25,7 +25,7 @@ function initShPassword(){
 }
 
 function initFISettingStaff(){ 
-    ajaxPro('POST', base_url+'/staff/getBySession', null, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'staff/getBySession', null, 'json', false, false, false, false, success, success, null);          
     function success(output) {                   
         var btnCust = '<button type="submit" class="btn btn-default" title="Add picture tags">' +
                 '<i class="fa fa-upload"></i>' +
@@ -74,12 +74,12 @@ function inputTypeSetting(){
             var id_length = $('#form-staff input[name=staff_id]').val().split('').length;
             var formData = new FormData($(this)[0]);                
             if (id_length>0) {
-                ajaxPro('POST', base_url+'/staff/edit', formData, 'html', false, false, false, false, success, success, null);       
+                ajaxPro('POST', base_url+'staff/edit', formData, 'html', false, false, false, false, success, success, null);       
             }else{
                 var d = new Date();     
                 var staff_id = '111'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) + (Math.floor(Math.random() * (99 - 10) + 10));    
                 formData.append('staff_id', staff_id);                        
-                ajaxPro('POST', base_url+'/staff/insert', formData, 'html', false, false, false, false, success, success, null);          
+                ajaxPro('POST', base_url+'staff/insert', formData, 'html', false, false, false, false, success, success, null);          
             }            
             function success(output) {            
                 dt_setting_user.ajax.reload();
@@ -116,7 +116,7 @@ function settingProfilUpdate(){
             event.preventDefault();                
             var id_length = $('#form-setting-profil input[name=staff_id]').val().split('').length;
             var formData = new FormData($(this)[0]);                
-            ajaxPro('POST', base_url+'/staff/settingProfil', formData, 'html', false, false, false, false, success, success, null);       
+            ajaxPro('POST', base_url+'staff/settingProfil', formData, 'html', false, false, false, false, success, success, null);       
             function success(output) {            
                 
                 $("#form-setting-profil").bootstrapValidator('resetForm', true);                 
@@ -128,7 +128,7 @@ function settingProfilUpdate(){
 }
 
 function initSettingUsername(){            
-    ajaxPro('POST', base_url+'/staff/getBySession', null, 'JSON', false, false, false, false, success, success, null);     
+    ajaxPro('POST', base_url+'staff/getBySession', null, 'JSON', false, false, false, false, success, success, null);     
     function success(output) {                   
         $('#form-setting-username input[name=username]').val(output.data.username);
     } 
@@ -151,7 +151,7 @@ function settingPasswordUpdate(){
                     },
                     remote: {
                         type: 'POST',
-                        url: base_url+'/staff/getCurrentPassword',
+                        url: base_url+'staff/getCurrentPassword',
                         message: 'Old password is wrong!',
                         delay: 1000
                     }
@@ -186,7 +186,7 @@ function settingPasswordUpdate(){
         $('#form-setting-password').submit(function (event) {
             event.preventDefault();                            
             var formData = new FormData($(this)[0]);                
-            ajaxPro('POST', base_url+'/staff/settingPassword', formData, 'html', false, false, false, false, success, success, null);       
+            ajaxPro('POST', base_url+'staff/settingPassword', formData, 'html', false, false, false, false, success, success, null);       
             function success(output) {            
                 $("#form-setting-password")[0].reset();
                 $("#form-setting-password").bootstrapValidator('resetForm', true);                 
@@ -202,7 +202,7 @@ function settingPhotoUpdate(){
         event.preventDefault();                
         var id_length = $('#form-setting-profil input[name=staff_id]').val().split('').length;
         var formData = new FormData($(this)[0]);                
-        ajaxPro('POST', base_url+'/staff/settingPhoto', formData, 'html', false, false, false, false, success, success, null);       
+        ajaxPro('POST', base_url+'staff/settingPhoto', formData, 'html', false, false, false, false, success, success, null);       
         function success(output) {                                              
             notify('info', output, null);                                
         }   
@@ -214,7 +214,7 @@ function settingDatabase(){
     $('#form-setting-database').submit(function (event) {
         event.preventDefault();                        
         var formData = new FormData($(this)[0]);                
-        ajaxPro('POST', base_url+'/setting/exportDB', formData, 'html', false, false, false, false, success, success, null);       
+        ajaxPro('POST', base_url+'setting/exportDB', formData, 'html', false, false, false, false, success, success, null);       
         function success(output) {                                              
             notify('info', output, null);                                
         }   
@@ -248,7 +248,7 @@ function settingUsernameUpdate(){
                     },
                     remote: {
                         type: 'POST',
-                        url: base_url+'/staff/getAvailableUsername',
+                        url: base_url+'staff/getAvailableUsername',
                         message: 'Username already used!',
                         delay: 1000
                     }
@@ -259,7 +259,7 @@ function settingUsernameUpdate(){
         $('#form-setting-username').submit(function (event) {
             event.preventDefault();                            
             var formData = new FormData($(this)[0]);                
-            ajaxPro('POST', base_url+'/staff/settingUsername', formData, 'html', false, false, false, false, success, success, null);       
+            ajaxPro('POST', base_url+'staff/settingUsername', formData, 'html', false, false, false, false, success, success, null);       
             function success(output) {            
                 $("#form-setting-username")[0].reset();
                 $("#form-setting-username").bootstrapValidator('resetForm', true);                 
@@ -272,7 +272,7 @@ function settingUsernameUpdate(){
 
 function initSettingDT(){
     dt_setting_user = $('#dt-setting-user').DataTable({
-        ajax : base_url+'/staff/getAllUser',
+        ajax : base_url+'staff/getAllUser',
         dom: 'Bfrtip', //B -> Button
         //        buttons: [
         //            'copy', 'csv', 'excel', 'pdf', 'print'
@@ -317,7 +317,7 @@ function initSettingDT(){
 function getSettingMenu(){
     var formData = new FormData($(this)[0]);        
     formData.append('detail', 'Tab');  
-    ajaxPro('POST', base_url+'/menu/getByIdType', formData, 'JSON', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'menu/getByIdType', formData, 'JSON', false, false, false, false, success, success, null);          
     function success(output) {   
         var html = '';
         $(output.data).each(function(i, v){
@@ -338,7 +338,7 @@ function getEditSetting(i){
     var staff_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('staff_id', staff_id);                        
-    ajaxPro('POST', base_url+'/staff/getById', formData, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'staff/getById', formData, 'json', false, false, false, false, success, success, null);          
     function success(output) {   
         $('#form-staff .form-group').each(function(i, v){
             var element = $(this).children().eq('1').prop("tagName").toString().toLowerCase();            
@@ -354,7 +354,7 @@ function getDeleteSetting(i){
     var staff_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('staff_id', staff_id);                        
-    ajaxPro('POST', base_url+'/staff/delete', formData, 'html', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'staff/delete', formData, 'html', false, false, false, false, success, success, null);          
     function success(output) {   
         dt_setting_user.ajax.reload();
         notify('info', output, null);
@@ -362,7 +362,7 @@ function getDeleteSetting(i){
 }
 
 function getBySessionSetting(){
-    ajaxPro('POST', base_url+'/staff/getBySession', null, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'staff/getBySession', null, 'json', false, false, false, false, success, success, null);          
     function success(output) {   
         $('#form-setting-profil .form-group').each(function(i, v){
             var element_tag = $(this).children().eq('1').prop("tagName").toString().toLowerCase();            

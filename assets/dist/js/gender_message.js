@@ -10,7 +10,7 @@ function GenderMessage(){
 
 function initGenderMessageDT(){
     dt_gender_message = $('#dt-gender-message').DataTable({
-        ajax : '../l-fis/gender_message/getAll',
+        ajax : base_url+'gender_message/getAll',
         dom: 'lfrtip', //B -> Button
         //        buttons: [
         //            'copy', 'csv', 'excel', 'pdf', 'print'
@@ -47,7 +47,7 @@ function initGenderMessageDT(){
 }
 
 function getAllGM_Gender(){
-    ajaxPro('POST', '/l-fis/gender/getAll', null, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'gender/getAll', null, 'json', false, false, false, false, success, success, null);          
     function success(output) {          
         var html = '';
         $(output.data).each(function(i, v){                        
@@ -58,7 +58,7 @@ function getAllGM_Gender(){
 }
 
 function getAllGM_Language(){
-    ajaxPro('POST', '/l-fis/language/getAll', null, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'language/getAll', null, 'json', false, false, false, false, success, success, null);          
     function success(output) {          
         var html = '';
         $(output.data).each(function(i, v){                        
@@ -92,12 +92,12 @@ function inputTypeGenderMessage(){
             var id_length = $('#form-gender-message input[name=gender_message_id]').val().split('').length;
             var formData = new FormData($(this)[0]);                
             if (id_length>0) {                
-                ajaxPro('POST', '/l-fis/gender_message/edit', formData, 'html', false, false, false, false, success, success, null);          
+                ajaxPro('POST', base_url+'gender_message/edit', formData, 'html', false, false, false, false, success, success, null);          
             }else{                
                 var d = new Date();         
                 var gender_message_id = '116'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) + (Math.floor(Math.random() * (99 - 10) + 10));    
                 formData.append('gender_message_id', gender_message_id);                        
-                ajaxPro('POST', '/l-fis/gender_message/insert', formData, 'html', false, false, false, false, success, success, null);  
+                ajaxPro('POST', base_url+'gender_message/insert', formData, 'html', false, false, false, false, success, success, null);  
             }
             function success(output) {            
                 dt_gender_message.ajax.reload();
@@ -114,7 +114,7 @@ function getEditGenderMessage(i){
     var gender_message_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('gender_message_id', gender_message_id);                        
-    ajaxPro('POST', '/l-fis/gender_message/getById', formData, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'gender_message/getById', formData, 'json', false, false, false, false, success, success, null);          
     function success(output) {   
         $('#form-gender-message .form-group').each(function(i, v){
             var element = $(this).children().eq('1').prop("tagName").toString().toLowerCase();            
@@ -136,7 +136,7 @@ function getDeleteGenderMessage(i){
     var gender_message_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('gender_message_id', gender_message_id);                        
-    ajaxPro('POST', '/l-fis/gender_message/delete', formData, 'html', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'gender_message/delete', formData, 'html', false, false, false, false, success, success, null);          
     function success(output) {   
         dt_gender_message.ajax.reload();
         notify('info', output, null);

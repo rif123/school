@@ -47,12 +47,12 @@ function inputTypeMenu(){
             var id_length = $('#form-menu input[name=menu_id]').val().split('').length;
             var formData = new FormData($(this)[0]);                            
             if (id_length>0) {                
-                ajaxPro('POST', '/l-fis/menu/edit', formData, 'html', false, false, false, false, success, success, null);                          
+                ajaxPro('POST', base_url+'menu/edit', formData, 'html', false, false, false, false, success, success, null);                          
             }else{                
                 var d = new Date();         
                 var menu_id = '127'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) + (Math.floor(Math.random() * (99 - 10) + 10));    
                 formData.append('menu_id', menu_id);                        
-                ajaxPro('POST', '/l-fis/menu/insert', formData, 'html', false, false, false, false, success, success, null);                          
+                ajaxPro('POST', base_url+'menu/insert', formData, 'html', false, false, false, false, success, success, null);                          
             }
             function success(output) {            
                 dt_menu.ajax.reload();
@@ -70,7 +70,7 @@ function getEditMenu(i){
     var menu_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('menu_id', menu_id);                        
-    ajaxPro('POST', '/l-fis/menu/getById', formData, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'menu/getById', formData, 'json', false, false, false, false, success, success, null);          
     function success(output) {   
         $('#form-menu .form-group').each(function(i, v){
             var element = $(this).children().eq('1').prop("tagName").toString().toLowerCase();            
@@ -85,7 +85,7 @@ function getDeleteMenu(i){
     var menu_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('menu_id', menu_id);                         
-    ajaxPro('POST', '/l-fis/menu/delete', formData, 'html', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'menu/delete', formData, 'html', false, false, false, false, success, success, null);          
     function success(output) {   
         dt_menu.ajax.reload();
         notify('info', output, null);
@@ -94,7 +94,7 @@ function getDeleteMenu(i){
 
 function initMenuDT(){
     dt_menu = $('#dt-menu').DataTable({
-        ajax : '../l-fis/menu/getAll',
+        ajax : base_url+'menu/getAll',
         dom: 'lfrtip', //B -> Button
         //        buttons: [
         //            'copy', 'csv', 'excel', 'pdf', 'print'
@@ -136,7 +136,7 @@ function initMenuDT(){
 }
 
 function getAllMenu_Permission(){
-    ajaxPro('POST', '/l-fis/permission/getAll', null, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'permission/getAll', null, 'json', false, false, false, false, success, success, null);          
     function success(output) {          
         var html = '';
         $(output.data).each(function(i, v){                        
@@ -147,7 +147,7 @@ function getAllMenu_Permission(){
 }
 
 function getAllMenu_MenuType(){    
-    ajaxPro('POST', '/l-fis/menu_type/getAll', null, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'menu_type/getAll', null, 'json', false, false, false, false, success, success, null);          
     function success(output) {          
         var html = '';
         $(output.data).each(function(i, v){                        

@@ -8,7 +8,7 @@ function Period(){
 
 function initPeriodDT(){    
     dt_period = $('#dt-period').DataTable({
-        ajax : base_url+'/period/getAll',
+        ajax : base_url+'period/getAll',
         dom: 'lfrtip', //B -> Button
         //        buttons: [
         //            'copy', 'csv', 'excel', 'pdf', 'print'
@@ -77,7 +77,7 @@ function insert(formData){
     var d = new Date();         
     var period_id = '129'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) + (Math.floor(Math.random() * (99 - 10) + 10));    
     formData.append('period_id', period_id);                        
-    ajaxPro('POST', base_url+'/period/insert', formData, 'html', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'period/insert', formData, 'html', false, false, false, false, success, success, null);          
     function success(output) {            
         dt_period.ajax.reload();
         $("#form-period")[0].reset();
@@ -87,7 +87,7 @@ function insert(formData){
 }
 
 function edit(formData){        
-    ajaxPro('POST', base_url+'/period/edit', formData, 'html', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'period/edit', formData, 'html', false, false, false, false, success, success, null);          
     function success(output) {            
         dt_period.ajax.reload();
         $("#form-period")[0].reset();
@@ -100,7 +100,7 @@ function getEditPeriod(i){
     var period_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('period_id', period_id);                        
-    ajaxPro('POST', base_url+'/period/getById', formData, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'period/getById', formData, 'json', false, false, false, false, success, success, null);          
     function success(output) {   
         $('#form-period .form-group').each(function(i, v){
             var element = $(this).children().eq('1').prop("tagName").toString().toLowerCase();            
@@ -122,7 +122,7 @@ function getDeletePeriod(i){
     var period_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('period_id', period_id);                        
-    ajaxPro('POST', base_url+'/period/delete', formData, 'html', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'period/delete', formData, 'html', false, false, false, false, success, success, null);          
     function success(output) {   
         dt_period.ajax.reload();
         notify('info', output, null);

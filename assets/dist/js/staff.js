@@ -2,21 +2,21 @@ var default_date = '0000-00-00';
 var dt_staff;
 
 function Staff(){
-    this.initDT = initStaffDT;    
-    this.initFI = initFIStaff;          
-    this.initDRP = initStaffDRP;   
-    this.inputType = inputTypeStaff;       
+    this.initDT = initStaffDT;
+    this.initFI = initFIStaff;
+    this.initDRP = initStaffDRP;
+    this.inputType = inputTypeStaff;
     this.getAll_Permission = getAllStaff_Permission;
     this.getAll_Language = getAllStaff_Language;
     this.getAll_Gender = getAllStaff_Gender;
     this.getAll_PermissionUser = getAllStaff_PermissionUser;
 }
 
-function initFIStaff(){    
-    var btnCust = '<button type="button" class="btn btn-default" title="Add picture tags" ' + 
+function initFIStaff(){
+    var btnCust = '<button type="button" class="btn btn-default" title="Add picture tags" ' +
             'onclick="alert(\'Call your custom code here.\')">' +
             '<i class="glyphicon glyphicon-tag"></i>' +
-            '</button>'; 
+            '</button>';
     $('#form-staff input[name=photo]').fileinput({
         overwriteInitial: true,
         maxFileSize: 1500,
@@ -39,7 +39,7 @@ function initFIStaff(){
 
 function initStaffDT(){
     dt_staff = $('#dt-staff').DataTable({
-        ajax : base_url+'/staff/getAll',
+        ajax : base_url+'staff/getAll',
         //        dom: 'lfrtip', //B -> Button
         //        //        buttons: [
         //        //            'copy', 'csv', 'excel', 'pdf', 'print'
@@ -65,7 +65,7 @@ function initStaffDT(){
                 "data" : "permission_detail"
             }, {
                 "data" : "staff_id",
-                "render" : function (data, type, row) {						                    
+                "render" : function (data, type, row) {
                     var html = '<center><div class="btn-group">';
                     html += '<button type="button" class="detail btn btn-warning" value="' + data + '" onclick="getEditStaff(this);"><i class="fa fa-pencil-square-o"></i> Edit</button>';
                     html += '<button type="button" class="detail btn btn-danger" value="' + data + '" onclick="getDeleteStaff(this);"><i class="fa fa-trash-o"></i> Delete</button>';
@@ -75,11 +75,11 @@ function initStaffDT(){
             }
         ],
         aLengthMenu : [[5, 10, -1], [5, 10, "All"]],
-        pageLength : 5        
-    });  
+        pageLength : 5
+    });
 }
 
-function inputTypeStaff(){    
+function inputTypeStaff(){
     $('#form-staff').bootstrapValidator({
         message: 'This value is not valid',
         feedbackIcons: {
@@ -96,7 +96,7 @@ function inputTypeStaff(){
                     },
                     remote: {
                         type: 'POST',
-                        url: '/l-fis/staff/getByNip',
+                        url: base_url+'staff/getByNip',
                         message: 'The username is available',
                         delay: 1000
                     }
@@ -113,32 +113,32 @@ function inputTypeStaff(){
         }
     }).on('success.form.bv', function (e) {
         $('#form-staff').submit(function (event) {
-            event.preventDefault();                
+            event.preventDefault();
             var id_length = $('#form-staff input[name=staff_id]').val().split('').length;
-            var formData = new FormData($(this)[0]);                
+            var formData = new FormData($(this)[0]);
             if (id_length>0) {
-                ajaxPro('POST', base_url+'/staff/edit', formData, 'html', false, false, false, false, success, success, null);       
+                ajaxPro('POST', base_url+'staff/edit', formData, 'html', false, false, false, false, success, success, null);
             }else{
-                var d = new Date();     
-                var staff_id = '111'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) + (Math.floor(Math.random() * (99 - 10) + 10));    
-                formData.append('staff_id', staff_id);                        
-                ajaxPro('POST', base_url+'/staff/insert', formData, 'html', false, false, false, false, success, success, null);          
-            }            
-            function success(output) {            
+                var d = new Date();
+                var staff_id = '111'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) + (Math.floor(Math.random() * (99 - 10) + 10));
+                formData.append('staff_id', staff_id);
+                ajaxPro('POST', base_url+'staff/insert', formData, 'html', false, false, false, false, success, success, null);
+            }
+            function success(output) {
                 dt_staff.ajax.reload();
                 $("#form-staff")[0].reset();
-                $("#form-staff").bootstrapValidator('resetForm', true); 
+                $("#form-staff").bootstrapValidator('resetForm', true);
                 notify('info', output, null);
-            }   
+            }
             return false;
-        });    
-    });               
+        });
+    });
 }
 
 function initStaffDRP(element){
-    $(element).daterangepicker({        
+    $(element).daterangepicker({
         "singleDatePicker": true,
-        "showDropdowns": true,        
+        "showDropdowns": true,
         locale: {
             format: 'YYYY-MM-DD',
             cancelLabel:'Reset'
@@ -152,74 +152,74 @@ function initStaffDRP(element){
 
 function getEditStaff(i){
     var staff_id = $(i).val();
-    var formData = new FormData($(this)[0]);        
-    formData.append('staff_id', staff_id);                        
-    ajaxPro('POST', base_url+'/staff/getById', formData, 'json', false, false, false, false, success, success, null);          
-    function success(output) {   
+    var formData = new FormData($(this)[0]);
+    formData.append('staff_id', staff_id);
+    ajaxPro('POST', base_url+'staff/getById', formData, 'json', false, false, false, false, success, success, null);
+    function success(output) {
         $('#form-staff .form-group').each(function(i, v){
-            var element = $(this).children().eq('1').prop("tagName").toString().toLowerCase();            
+            var element = $(this).children().eq('1').prop("tagName").toString().toLowerCase();
             var key = Object.keys(output.data)[i];
-            var value = output.data[Object.keys(output.data)[i]];            
-            $(this).find(element+'[name='+key+']').val(value);            
-        });             
-    } 
+            var value = output.data[Object.keys(output.data)[i]];
+            $(this).find(element+'[name='+key+']').val(value);
+        });
+    }
 }
 
 function getDeleteStaff(i){
     var staff_id = $(i).val();
-    var formData = new FormData($(this)[0]);        
-    formData.append('staff_id', staff_id);                        
-    ajaxPro('POST', base_url+'/staff/delete', formData, 'html', false, false, false, false, success, success, null);          
-    function success(output) {   
+    var formData = new FormData($(this)[0]);
+    formData.append('staff_id', staff_id);
+    ajaxPro('POST', base_url+'staff/delete', formData, 'html', false, false, false, false, success, success, null);
+    function success(output) {
         dt_staff.ajax.reload();
         notify('info', output, null);
-    } 
+    }
 }
 
 function getAllStaff_Permission(){
-    //    ajaxPro('POST', '/l-fis/permission/getAllUser', null, 'json', false, false, false, false, success, success, null);          
-    ajaxPro('POST', base_url+'/permission/getAll', null, 'json', false, false, false, false, success, success, null);          
-    function success(output) {          
+    //    ajaxPro('POST', base_url+'permission/getAllUser', null, 'json', false, false, false, false, success, success, null);
+    ajaxPro('POST', base_url+'permission/getAll', null, 'json', false, false, false, false, success, success, null);
+    function success(output) {
         var html = '';
-        $(output.data).each(function(i, v){                        
-            html += '<option value="'+v.permission_id+'">'+v.detail+'</option>'; 
-        });        
+        $(output.data).each(function(i, v){
+            html += '<option value="'+v.permission_id+'">'+v.detail+'</option>';
+        });
         $('#form-staff select[name=permission_id]').html(html);
-    } 
+    }
 }
 
 function getAllStaff_PermissionUser(){
-    //    ajaxPro('POST', '/l-fis/permission/getAllUser', null, 'json', false, false, false, false, success, success, null);          
-    ajaxPro('POST', base_url+'/permission/getAllUser', null, 'json', false, false, false, false, success, success, null);          
-    function success(output) {          
+    //    ajaxPro('POST', base_url+'permission/getAllUser', null, 'json', false, false, false, false, success, success, null);
+    ajaxPro('POST', base_url+'permission/getAllUser', null, 'json', false, false, false, false, success, success, null);
+    function success(output) {
         var html = '';
-        $(output.data).each(function(i, v){                        
-            html += '<option value="'+v.permission_id+'">'+v.detail+'</option>'; 
-        });        
+        $(output.data).each(function(i, v){
+            html += '<option value="'+v.permission_id+'">'+v.detail+'</option>';
+        });
         $('#form-staff select[name=permission_id]').html(html);
-    } 
+    }
 }
 
 function getAllStaff_Gender(element){
-    ajaxPro('POST', base_url+'/gender/getAll', null, 'json', false, false, false, false, success, success, null);          
-    function success(output) {          
+    ajaxPro('POST', base_url+'gender/getAll', null, 'json', false, false, false, false, success, success, null);
+    function success(output) {
         var html = '';
-        $(output.data).each(function(i, v){                        
-            html += '<option value="'+v.gender_id+'">'+v.detail+'</option>'; 
-        });        
+        $(output.data).each(function(i, v){
+            html += '<option value="'+v.gender_id+'">'+v.detail+'</option>';
+        });
         $(element).html(html);
-    } 
+    }
 }
 
 function getAllStaff_Language(element){
-    ajaxPro('POST', base_url+'/language/getAll', null, 'json', false, false, false, false, success, success, null);          
-    function success(output) {          
+    ajaxPro('POST', base_url+'language/getAll', null, 'json', false, false, false, false, success, success, null);
+    function success(output) {
         var html = '';
-        $(output.data).each(function(i, v){                        
-            html += '<option value="'+v.language_id+'">'+v.detail+'</option>'; 
-        });        
+        $(output.data).each(function(i, v){
+            html += '<option value="'+v.language_id+'">'+v.detail+'</option>';
+        });
         $(element).html(html);
-    } 
+    }
 }
 
 function ajaxPro(type, url, data, dataType, async, cache, contentType, processData, success, error, complete) {

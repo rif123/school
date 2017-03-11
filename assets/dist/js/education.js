@@ -8,7 +8,7 @@ function Education(){
 
 function initEducationDT(){
     dt_education = $('#dt-education').DataTable({
-        ajax : base_url+'/education/getAll',
+        ajax : base_url+'education/getAll',
         dom: 'lfrtip', //B -> Button
         //        buttons: [
         //            'copy', 'csv', 'excel', 'pdf', 'print'
@@ -86,7 +86,7 @@ function getEditEducation(i){
     var education_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('education_id', education_id);                        
-    ajaxPro('POST', base_url+'/education/getById', formData, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'education/getById', formData, 'json', false, false, false, false, success, success, null);          
     function success(output) {   
         $('#form-education .form-group').each(function(i, v){
             var element = $(this).children().eq('1').prop("tagName").toString().toLowerCase();            

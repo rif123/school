@@ -14,7 +14,7 @@ function initPaymentDT(){
     //    alert($('#student_id').html());
     
     dt_payment = $('#dt-payment').DataTable({
-            // ajax : base_url+'/student/getPayment?student_id='+$('#student_id').html(),
+            // ajax : base_url+'student/getPayment?student_id='+$('#student_id').html(),
           ajax : {
                     'url' : base_url+'student/getPayment',
                     'type' : 'get',
@@ -29,7 +29,7 @@ function initPaymentDT(){
                 text: '<i class="fa fa-arrow-left"></i> Back',
                 className: 'btn btn-default',
                 action: function ( e, dt, node, config ) {
-                    window.location.href = "/l-fis/student";         
+                    window.location.href = "base_url+'student";         
                 }
             },
             {
@@ -145,7 +145,7 @@ function getRevisionPayment(i){
     var student_id = $('#student_id').html();
     
     var form = document.createElement('form');
-    form.action = base_url+'/payment_revision';
+    form.action = base_url+'payment_revision';
     form.method = 'post';
     
     var input1 = document.createElement('input');
@@ -169,7 +169,7 @@ function getPrintPayment(i){
     var student_id = $('#student_id').html();
     
     // var form = document.createElement('form');
-    // form.action = '/l-fis/payment_print';
+    // form.action = base_url+'payment_print';
     // form.method = 'post';
     
     // var input1 = document.createElement('input');
@@ -188,7 +188,7 @@ function getPrintPayment(i){
     // form.submit();
     
      var jForm = $('<form></form>', {
-        action: base_url+'/payment_print',
+        action: base_url+'payment_print',
         method: 'post'
     });
 
@@ -271,7 +271,7 @@ function inputTypePrimaryPayment(){
             var formData = new FormData($(this)[0]);                
             formData.append('student_id', $('#student_id').html());
             formData.append('payment_status', $('.update-data-btn').attr('value'));   
-            ajaxPro('POST', base_url+'/student/getSelectedPrimaryPayment2', formData, 'json', false, false, false, false, success, success, null);          
+            ajaxPro('POST', base_url+'student/getSelectedPrimaryPayment2', formData, 'json', false, false, false, false, success, success, null);          
             function success(output){ 
                 var d = new Date();
                 var total = $('#form-primary-payment input[name=total]').val();               
@@ -285,11 +285,11 @@ function inputTypePrimaryPayment(){
                         formData.append('payment_type_id', v.payment_type_id);                         
                         if(tempTotal >= 0){                          
                             formData.append('total', v.remain);     
-                            ajaxPro('POST', base_url+'/payment/insert', formData, 'json', false, false, false, false, null, null, null);
+                            ajaxPro('POST', base_url+'payment/insert', formData, 'json', false, false, false, false, null, null, null);
                             total = tempTotal;
                         }else{                            
                             formData.append('total', total);                            
-                            ajaxPro('POST', base_url+'/payment/insert', formData, 'json', false, false, false, false, null, null, null);
+                            ajaxPro('POST', base_url+'payment/insert', formData, 'json', false, false, false, false, null, null, null);
                             total = 0;
                         }                        
                         //                        alert(v.payment_type_id);
@@ -341,7 +341,7 @@ function inputTypePayment(){
             var payment_group = '1222'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + (Math.floor(Math.random() * (9999999999 - 1000000000) + 1000000000));    
             formData.append('payment_id', payment_id);                        
             formData.append('payment_group', payment_group);              
-            ajaxPro('POST', base_url+'/payment/insert', formData, 'html', false, false, false, false, success, success, null);          
+            ajaxPro('POST', base_url+'payment/insert', formData, 'html', false, false, false, false, success, success, null);          
             function success(output) {            
                 dt_payment.ajax.reload();
                 $("#form-payment")[0].reset();

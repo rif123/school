@@ -8,7 +8,7 @@ function Label(){
 
 function initLabelDT(){
     dt_label = $('#dt-label').DataTable({
-        ajax : '../l-fis/label/getAll',
+        ajax : base_url+'label/getAll',
         dom: 'lfrtip', //B -> Button
         //        buttons: [
         //            'copy', 'csv', 'excel', 'pdf', 'print'
@@ -77,7 +77,7 @@ function insert(formData){
     var d = new Date();         
     var label_id = '124'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) + (Math.floor(Math.random() * (99 - 10) + 10));    
     formData.append('label_id', label_id);                        
-    ajaxPro('POST', '/l-fis/label/insert', formData, 'html', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'label/insert', formData, 'html', false, false, false, false, success, success, null);          
     function success(output) {            
         dt_label.ajax.reload();
         $("#form-label")[0].reset();
@@ -87,7 +87,7 @@ function insert(formData){
 }
 
 function edit(formData){        
-    ajaxPro('POST', '/l-fis/label/edit', formData, 'html', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'label/edit', formData, 'html', false, false, false, false, success, success, null);          
     function success(output) {            
         dt_label.ajax.reload();
         $("#form-label")[0].reset();
@@ -100,7 +100,7 @@ function getEditLabel(i){
     var label_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('label_id', label_id);                        
-    ajaxPro('POST', '/l-fis/label/getById', formData, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'label/getById', formData, 'json', false, false, false, false, success, success, null);          
     function success(output) {   
         $('#form-label .form-group').each(function(i, v){
             var element = $(this).children().eq('1').prop("tagName").toString().toLowerCase();            
@@ -122,7 +122,7 @@ function getDeleteLabel(i){
     var label_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('label_id', label_id);                        
-    ajaxPro('POST', '/l-fis/label/delete', formData, 'html', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'label/delete', formData, 'html', false, false, false, false, success, success, null);          
     function success(output) {   
         dt_label.ajax.reload();
         notify('info', output, null);

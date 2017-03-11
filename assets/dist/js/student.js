@@ -29,7 +29,7 @@ function saveEditStudent(){
                     },
                     remote: {
                         type: 'POST',
-                        url: '/l-fis/staff/getByNip',
+                        url: base_url+'staff/getByNip',
                         message: 'The username is available',
                         delay: 1000
                     }
@@ -48,7 +48,7 @@ function saveEditStudent(){
         $('#form-student').submit(function (event) {
             event.preventDefault();                
             var formData = new FormData($(this)[0]);                
-            ajaxPro('POST', base_url+'/student/edit', formData, 'html', false, false, false, false, success, success, null);       
+            ajaxPro('POST', base_url+'student/edit', formData, 'html', false, false, false, false, success, success, null);       
             function success(output) {            
                 dt_student.ajax.reload();
                 $("#form-student")[0].reset();
@@ -118,7 +118,7 @@ function initStudentDT(){
 function educationEvent(element){
     var nameEdu = $(element).val();
    $('#dt-staff').DataTable({
-        ajax : base_url+'/student/getAll?findName='+nameEdu,
+        ajax : base_url+'student/getAll?findName='+nameEdu,
         columns : [{
                 "data" : "nis"
             },{
@@ -155,7 +155,7 @@ function getProfileStudent(i){
     var student_id = $(i).val();    
     var formData = new FormData();        
     formData.append('student_id', student_id);                        
-    ajaxPro('POST', base_url+'/student/getById', formData, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'student/getById', formData, 'json', false, false, false, false, success, success, null);          
     function success(output) {           
         $('#form-student .form-group').each(function(i, v){
             $("#form-student").bootstrapValidator('resetForm', true); 
@@ -203,7 +203,7 @@ function getProfileStudent(i){
 function getPaymentStudent(i){
      var student_id = $(i).val();
     // var form = document.createElement('form');
-    // form.action = base_url+'/payment';
+    // form.action = base_url+'payment';
     // form.method = 'post';
     // var input = document.createElement('input');
     // input.type = 'hidden';
@@ -214,7 +214,7 @@ function getPaymentStudent(i){
     // form.submit();
     
     var jForm = $('<form></form>', {
-        action: base_url+'/payment',
+        action: base_url+'payment',
         method: 'post'
     });
 
@@ -266,7 +266,7 @@ function initStudentDRP(){
 
 
 function getAllStudent_Period(){
-    ajaxPro('POST', base_url+'/period/getAll', null, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'period/getAll', null, 'json', false, false, false, false, success, success, null);          
     function success(output) {                  
         var html = '';
         $(output.data).each(function(i, v){                        
@@ -277,7 +277,7 @@ function getAllStudent_Period(){
 }
 
 function getAllStudent_Class(){
-    ajaxPro('POST', base_url+'/classes/getAll', null, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'classes/getAll', null, 'json', false, false, false, false, success, success, null);          
     function success(output) {                  
         var html = '';
         $(output.data).each(function(i, v){                        
@@ -288,7 +288,7 @@ function getAllStudent_Class(){
 }
 
 function getAllStudent_Education(){
-    ajaxPro('POST', base_url+'/education/getAll', null, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'education/getAll', null, 'json', false, false, false, false, success, success, null);          
     function success(output) {                  
         var html = '';
         $(output.data).each(function(i, v){                        
@@ -303,7 +303,7 @@ function getAllStudent_Education(){
 }
 
 function getAllStudent_Gender(){
-    ajaxPro('POST', base_url+'/gender/getAll', null, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'gender/getAll', null, 'json', false, false, false, false, success, success, null);          
     function success(output) {          
         var html = '';
         $(output.data).each(function(i, v){                        

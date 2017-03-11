@@ -21,7 +21,7 @@ function initPaymentRevisionDT(){
                 action: function ( e, dt, node, config ) {
                     var student_id = $('#student_id').html();                       
                     var form = document.createElement('form');
-                    form.action = '/l-fis/payment';
+                    form.action = base_url+'payment';
                     form.method = 'post';
     
                     var input1 = document.createElement('input');
@@ -58,7 +58,7 @@ function getUpdatePaymentRevision(i){
     var payment_id = $(i).val();
     var formData = new FormData($(this)[0]);            
     formData.append('payment_id', payment_id);                        
-    ajaxPro('POST', base_url+'/payment/getById', formData, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'payment/getById', formData, 'json', false, false, false, false, success, success, null);          
     function success(output) {           
         $('#form-payment-revision .form-group').each(function(i, v){
             var element_tag = $(this).children().eq('1').prop("tagName").toString().toLowerCase();            
@@ -105,7 +105,7 @@ function inputTypePaymentRevision(){
             event.preventDefault();                            
             var formData = new FormData($(this)[0]);                
             var d = new Date();     
-            ajaxPro('POST', '/l-fis/payment/edit', formData, 'html', false, false, false, false, success, success, null);          
+            ajaxPro('POST', base_url+'payment/edit', formData, 'html', false, false, false, false, success, success, null);          
             function success(output) {            
                 dt_payment_revision.ajax.reload();
                 $("#form-payment-revision")[0].reset();

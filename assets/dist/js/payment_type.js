@@ -79,7 +79,7 @@ function inputTypePaymentType(){
 
 function initPaymentTypeDT(){
     dt_payment_type = $('#dt-payment-type').DataTable({
-        ajax : base_url+'/payment_type/getAll',
+        ajax : base_url+'payment_type/getAll',
         //        dom: 'lfrtip', //B -> Button
         //        //        buttons: [
         //        //            'copy', 'csv', 'excel', 'pdf', 'print'
@@ -136,7 +136,7 @@ function getAllPT_Education(){
 }
 
 function getAllPT_Period(){
-    ajaxPro('POST', base_url+'/period/getAll', null, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'period/getAll', null, 'json', false, false, false, false, success, success, null);          
     function success(output) {                  
         var html = '';
         $(output.data).each(function(i, v){                        
@@ -150,7 +150,7 @@ function getEditPaymentType(i){
     var payment_type_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('payment_type_id', payment_type_id);     
-    ajaxPro('POST', base_url+'/payment_type/getById', formData, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'payment_type/getById', formData, 'json', false, false, false, false, success, success, null);          
     function success(output) {                   
         $('#form-payment-type .form-group').each(function(i, v){
             var element_tag = $(this).children().eq('1').prop("tagName").toString().toLowerCase();            
@@ -175,7 +175,7 @@ function getDeletePaymentType(i){
     var payment_type_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('payment_type_id', payment_type_id);                      
-    ajaxPro('POST', base_url+'/payment_type/delete', formData, 'html', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'payment_type/delete', formData, 'html', false, false, false, false, success, success, null);          
     function success(output) {   
         dt_payment_type.ajax.reload();
         notify('info', output, null);

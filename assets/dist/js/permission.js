@@ -8,7 +8,7 @@ function Permission(){
 
 function initPermissionDT(){
     dt_permission = $('#dt-permission').DataTable({
-        ajax : '../l-fis/permission/getAll',
+        ajax : base_url+'permission/getAll',
         dom: 'lfrtip', //B -> Button
         //        buttons: [
         //            'copy', 'csv', 'excel', 'pdf', 'print'
@@ -66,12 +66,12 @@ function inputTypePermission(){
             var id_length = $('#form-permission input[name=permission_id]').val().split('').length;
             var formData = new FormData($(this)[0]);                
             if (id_length>0) {
-                ajaxPro('POST', '/l-fis/permission/edit', formData, 'html', false, false, false, false, success, success, null);          
+                ajaxPro('POST', base_url+'permission/edit', formData, 'html', false, false, false, false, success, success, null);          
             }else{
                 var d = new Date();         
                 var permission_id = '126'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) + (Math.floor(Math.random() * (99 - 10) + 10));    
                 formData.append('permission_id', permission_id);                        
-                ajaxPro('POST', '/l-fis/permission/insert', formData, 'html', false, false, false, false, success, success, null);          
+                ajaxPro('POST', base_url+'permission/insert', formData, 'html', false, false, false, false, success, success, null);          
             }
             function success(output) {            
                 dt_permission.ajax.reload();
@@ -88,7 +88,7 @@ function getEditPermission(i){
     var permission_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('permission_id', permission_id);                        
-    ajaxPro('POST', '/l-fis/permission/getById', formData, 'json', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'permission/getById', formData, 'json', false, false, false, false, success, success, null);          
     function success(output) {   
         $('#form-permission .form-group').each(function(i, v){
             var element = $(this).children().eq('1').prop("tagName").toString().toLowerCase();            
@@ -103,7 +103,7 @@ function getDeletePermission(i){
     var permission_id = $(i).val();
     var formData = new FormData($(this)[0]);        
     formData.append('permission_id', permission_id);                        
-    ajaxPro('POST', '/l-fis/permission/delete', formData, 'html', false, false, false, false, success, success, null);          
+    ajaxPro('POST', base_url+'permission/delete', formData, 'html', false, false, false, false, success, success, null);          
     function success(output) {   
         dt_permission.ajax.reload();
         notify('info', output, null);

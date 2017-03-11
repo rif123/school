@@ -11,39 +11,39 @@ class Registration extends CI_Controller {
             redirect(base_url());
         } else {
             $this->load->view("view_registration");
-        }                               
-    }   
-    
-    public function init() {        
+        }
+    }
+
+    public function init() {
         $data = array(
-            'student_id' => $this->input->post('student_id'),            
+            'student_id' => $this->input->post('student_id'),
             'nis' => $this->input->post('nis'),
             'name' => $this->input->post('name'),
-            'address' => $this->input->post('address'), 
+            'address' => $this->input->post('address'),
             'born_date' => $this->input->post('born_date'),
-            'photo' => 'assets/dist/img/default.png',                                         
+            'photo' => 'assets/dist/img/default.png',
             'gender_id' => $this->input->post('gender_id'),
             'education_id' => $this->input->post('education_id'),
             'period_id' => $this->input->post('period_id')
         );
         return $data;
     }
-    
+
     public function insert() {
-        try {            
+        try {
             $data = $this->init();
-            $this->model_student->insert($data);            
+            $this->model_student->insert($data);
             if ($_FILES['photo']['error'] == 0){
                 $this->fileUpload($data['student_id']);
-            }  
+            }
             echo "Success";
         } catch (Exception $e) {
             echo 'Caught exception: ', $e->getMessage(), "\n";
         }
-    }             
-    
-    
-    public function fileUpload($file_name) {        
+    }
+
+
+    public function fileUpload($file_name) {
         $config['upload_path'] = 'assets/dist/img/';
         $config['allowed_types'] = 'gif|jpg|png|jpeg|pdf|doc|xml|zip|rar';
 //        $config['file_name'] = $user->id_user . '.jpg';

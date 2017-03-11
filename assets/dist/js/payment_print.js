@@ -21,7 +21,7 @@ function initPaymentPrintDT(){
                 action: function ( e, dt, node, config ) {
                     var student_id = $('#student_id').html();                       
                     var form = document.createElement('form');
-                    form.action = '/l-fis/payment';
+                    form.action = base_url+'payment';
                     form.method = 'post';
     
                     var input1 = document.createElement('input');
@@ -57,7 +57,7 @@ function initPaymentPrintDT(){
 function getUpdatePaymentPrint(i){
     var payment_id = $(i).val();    
     // var form = document.createElement('form');
-    // form.action = '/l-fis/payment_print/print_report';    
+    // form.action = base_url+'payment_print/print_report';    
     // form.target = '_blank';    
     // form.method = 'post';
     
@@ -69,7 +69,7 @@ function getUpdatePaymentPrint(i){
     // form.submit();
     
     var jForm = $('<form></form>', {
-        action: base_url+'/payment_print/print_report',
+        action: base_url+'payment_print/print_report',
         method: 'post',
         target:'_blank'
     });
@@ -113,7 +113,7 @@ function inputTypePaymentPrint(){
             event.preventDefault();                            
             var formData = new FormData($(this)[0]);                
             var d = new Date();     
-            ajaxPro('POST', '/l-fis/payment/edit', formData, 'html', false, false, false, false, success, success, null);          
+            ajaxPro('POST', base_url+'payment/edit', formData, 'html', false, false, false, false, success, success, null);          
             function success(output) {            
                 dt_payment_print.ajax.reload();
                 $("#form-payment-revision")[0].reset();

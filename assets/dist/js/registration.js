@@ -2,13 +2,13 @@ var dt_registration = null;
 
 function Registration(){
     this.initDT = initRegistrationDT;
-    this.inputType = inputTypeStudent;       
-    this.initFI = initFIRegistration;  
+    this.inputType = inputTypeStudent;
+    this.initFI = initFIRegistration;
     this.getAll_Education = getAllReg_Education;
     this.getAll_Period = getAllReg_Period;
 }
 
-function initFIRegistration(){    
+function initFIRegistration(){
     $('#form-student input[name=photo]').fileinput({
         overwriteInitial: true,
         maxFileSize: 1500,
@@ -31,9 +31,9 @@ function initFIRegistration(){
 
 
 function initRegistrationDT(){
-    dt_registration = $('#dt-registration').DataTable({});  
+    dt_registration = $('#dt-registration').DataTable({});
 }
-function inputTypeStudent(){    
+function inputTypeStudent(){
     $('#form-student').bootstrapValidator({
         message: 'This value is not valid',
         feedbackIcons: {
@@ -64,87 +64,87 @@ function inputTypeStudent(){
                     notEmpty: {
                         message: 'Required'
                     },
-                    remote: {      
+                    remote: {
                         type: 'POST',
-                        url: '/l-fis/payment_type/getMinMaxValidate2',
-                        data: function(validator) {                            
+                        url: base_url+'payment_type/getMinMaxValidate2',
+                        data: function(validator) {
                             return {
                                 education_id: validator.getFieldElements('education_id').val(),
                                 period_id: validator.getFieldElements('period_id').val(),
                                 status : 1
                             };
-                        }                        
-                    }                  
+                        }
+                    }
                 }
             }
         }
     }).on('success.form.bv', function (e) {
         $('#form-student').submit(function (event) {
-            event.preventDefault();                            
-            var formData = new FormData($(this)[0]);                
-            var d = new Date();     
-            var student_id = '112'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) + (Math.floor(Math.random() * (99 - 10) + 10));    
+            event.preventDefault();
+            var formData = new FormData($(this)[0]);
+            var d = new Date();
+            var student_id = '112'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) + (Math.floor(Math.random() * (99 - 10) + 10));
             formData.append('student_id', student_id);
-            ajaxPro('POST', '/l-fis/registration/insert', formData, 'html', false, false, false, false, success, success, null);         
-            function success(output) {            
+            ajaxPro('POST', base_url+'registration/insert', formData, 'html', false, false, false, false, success, success, null);
+            function success(output) {
                 formData.append('status', 1);
-                ajaxPro('POST', '/l-fis/payment_type/getByStatusEducationPeriod', formData, 'json', false, false, false, false, success2, success2, null);          
-                function success2(output) {                      
+                ajaxPro('POST', base_url+'payment_type/getByStatusEducationPeriod', formData, 'json', false, false, false, false, success2, success2, null);
+                function success2(output) {
                     var total = $('#form-student [name=total_payment]').val();
-                    var payment_group = '1222'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + (Math.floor(Math.random() * (9999999999 - 1000000000) + 1000000000));    
-                    $(output.data).each(function(i, v){             
+                    var payment_group = '1222'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + (Math.floor(Math.random() * (9999999999 - 1000000000) + 1000000000));
+                    $(output.data).each(function(i, v){
                         if(total>0){
                             var tempTotal = total - v.total;
-                            var payment_id = '120'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) + (Math.floor(Math.random() * (99 - 10) + 10));    
+                            var payment_id = '120'+d.getFullYear() + concatString((d.getMonth() + 1)) + concatString(d.getDate()) + concatString(d.getHours()) + concatString(d.getMinutes()) + concatString(d.getSeconds()) + (Math.floor(Math.random() * (99 - 10) + 10));
                             formData.append('payment_id', payment_id);
                             formData.append('payment_group', payment_group);
-                            formData.append('payment_type_id', v.payment_type_id);                        
+                            formData.append('payment_type_id', v.payment_type_id);
                             if(tempTotal >= 0){
-                                formData.append('total', v.total);                                                        
-                                ajaxPro('POST', '/l-fis/payment/insert', formData, 'json', false, false, false, false, null, null, null);
+                                formData.append('total', v.total);
+                                ajaxPro('POST', base_url+'payment/insert', formData, 'json', false, false, false, false, null, null, null);
                                 total = tempTotal;
                             }else{
-                                formData.append('total', total);                            
-                                ajaxPro('POST', '/l-fis/payment/insert', formData, 'json', false, false, false, false, null, null, null);
+                                formData.append('total', total);
+                                ajaxPro('POST', base_url+'payment/insert', formData, 'json', false, false, false, false, null, null, null);
                                 total = 0;
                             }
-                        }                        
+                        }
                         //                        console.log(v.payment_type_id);
-                    });                            
-                } 
-                
+                    });
+                }
+
                 //                dt_registration.ajax.reload();
                 $("#form-student")[0].reset();
-                $("#form-student").bootstrapValidator('resetForm', true); 
+                $("#form-student").bootstrapValidator('resetForm', true);
                 notify('info', output, null);
-            }   
+            }
             return false;
-        });    
-    });               
+        });
+    });
 }
 
 
 function getAllReg_Period(){
-    ajaxPro('POST', '/l-fis/period/getAll', null, 'json', false, false, false, false, success, success, null);          
-    function success(output) {                  
+    ajaxPro('POST', base_url+'period/getAll', null, 'json', false, false, false, false, success, success, null);
+    function success(output) {
         var html = '';
-        $(output.data).each(function(i, v){                        
-            html += '<option value="'+v.period_id+'">'+v.detail+'</option>'; 
-        });        
+        $(output.data).each(function(i, v){
+            html += '<option value="'+v.period_id+'">'+v.detail+'</option>';
+        });
         $('#form-student select[name=period_id]').html(html);
-    } 
+    }
 }
 
 
 function getAllReg_Education(){
-    ajaxPro('POST', '/l-fis/education/getAll', null, 'json', false, false, false, false, success, success, null);          
-    function success(output) {                  
+    ajaxPro('POST', base_url+'education/getAll', null, 'json', false, false, false, false, success, success, null);
+    function success(output) {
         var html = '';
-        $(output.data).each(function(i, v){                        
-            html += '<option value="'+v.education_id+'">'+v.detail+'</option>'; 
-        });        
+        $(output.data).each(function(i, v){
+            html += '<option value="'+v.education_id+'">'+v.detail+'</option>';
+        });
         $('#form-student select[name=education_id]').html(html);
-    } 
+    }
 }
 
 function ajaxPro(type, url, data, dataType, async, cache, contentType, processData, success, error, complete) {
