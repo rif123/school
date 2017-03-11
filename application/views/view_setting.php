@@ -126,7 +126,7 @@
                                         </form>
                                     </div><!-- /.tab-pane -->
                                     <div class="tab-pane" id="setting-database">
-                                        <form role="form" id="form-setting-database" action="<?php echo site_url().'setting/exportDB'; ?>" method="POST">
+                                        <form role="form" id="form-setting-database" action="<?php echo site_url().'/setting/exportDB'; ?>" method="POST">
 
                                             <div class="box-footer">
                                                 <button type="submit" class="btn btn btn-block btn-success">Export Database</button>
