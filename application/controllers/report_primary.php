@@ -14,6 +14,35 @@ class Report_primary extends CI_Controller {
         }
     }
 
+    public function resourcesAllMerge(){
+        $list = $this->model_payment->getOtherMerge();
+        $data = array();
+        $no = $_GET['start'];
+        foreach ($list as $customers) {
+            $no++;
+            $row = array();
+            $row[] = $customers->education_detail;
+            $row[] = $customers->nis;
+            $row[] = $customers->name;
+            $row[] = $customers->class_detail;
+            $row[] = date("d M Y",strtotime($customers->payment_date));
+            $row[] = $customers->class_detail;
+            $row[] = $customers->price;
+            $data[] = $row;
+        }
+        $output = array(
+                        "draw" => $_GET['draw'],
+                        "recordsTotal" => $no,
+                        "recordsFiltered" => $this->model_payment->getOtherMergeCount(),
+                        "data" => $data,
+                );
+        // echo "<pre>";
+        // print_R($output);die;
+        //output to json format
+        echo json_encode($output);
+    }
+
+
     public function resources(){
         $data = array();
         $columnDefs = array(

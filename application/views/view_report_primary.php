@@ -1,7 +1,7 @@
 <html>
     <?php include 'view_head.php'; ?>
     <body class="hold-transition skin-green-light sidebar-collapse sidebar-mini">
-        <div class="wrapper">            
+        <div class="wrapper">
             <?php include 'view_header.php'; ?>
             <?php include 'view_sidebar.php'; ?>
             <!-- Content Wrapper. Contains page content -->
@@ -17,36 +17,59 @@
                         <li class="active">Dashboard</li>
                     </ol>
                 </section>
-                
+
                 <!-- Main content -->
-                <section class="content">                    
+                <section class="content">
                     <!-- Main row -->
                     <div class="row">
                         <div class="col-md-12">
                             <!-- general form elements -->
-                            <div class="box box-success">                               
+                            <div class="box box-success">
                                 <div class="box-body">
-                                    <table id="dt-report-primary" class="table table-bordered table-hover"></table>
-                                </div><!-- /.box-header -->                                    
-                            </div><!-- /.box -->                           
-                        </div><!--/.col -->    
+                                    <table id="dt-report-primary" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                               <th>Education</th>
+                                               <th>NIS</th>
+                                               <th>Name</th>
+                                               <th>Class</th>
+                                               <th>Payment Date</th>
+                                               <th>PSB TK 2016</th>
+                                               <th>Amount</th>
+                                           </tr>
+                                       </thead>
+                                        <tfoot>
+                                            <tr>
+                                                <th>Education</th>
+                                                <th>NIS</th>
+                                                <th>Name</th>
+                                                <th>Class</th>
+                                                <th>Payment Date</th>
+                                                <th>PSB TK 2016</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div><!-- /.box-header -->
+                            </div><!-- /.box -->
+                        </div><!--/.col -->
                     </div><!-- /.row (main row) -->
                     <table id="table-print" class="table-print hide" ></table>
                 </section><!-- /.content -->
             </div><!-- /.content-wrapper -->
             <?php include 'view_modal.php'; ?>
             <?php include 'view_main_footer.php'; ?>
-        </div>                        
-        <?php include 'view_footer.php'; ?>   
-        <?php 
+        </div>
+        <?php include 'view_footer.php'; ?>
+        <?php
             $username_data = $this->session->userdata('staff');
             $name = $username_data->name;
         ?>
-        
-        <script type="text/javascript" src="<?php echo base_url(); ?>assets/dist/js/report_primary.js"></script>                
-        <script type="text/javascript" src="<?php echo base_url(); ?>assets/plugins/table2excel/jquery.table2excel.js"></script>        
+
+        <script type="text/javascript" src="<?php echo base_url(); ?>assets/dist/js/report_primary.js"></script>
+        <script type="text/javascript" src="<?php echo base_url(); ?>assets/plugins/table2excel/jquery.table2excel.js"></script>
         <script type="text/javascript">
-            $(document).ready(function(){    
+            $(document).ready(function(){
                 var globalUsername = "<?php echo $name; ?>";
                 var rp = new ReportPrimary();
                 rp.initDT(globalUsername);
