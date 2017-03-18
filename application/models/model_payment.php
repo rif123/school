@@ -29,12 +29,85 @@ class model_payment extends CI_Model {
                     $where .= $item." LIKE '%".$_GET['search']['value']."%' OR ";
                 }
             }
+            if (!empty($_GET['education'])) {
+                $where .= " and education_detail LIKE '%".$_GET['education']."%'";
+            }
+
+            if (!empty($_GET['class'])) {
+                $where .= " and class_detail = '".$_GET['class']."'";
+            }
+            if (!empty($_GET['status'])) {
+                $where .= " and status = '".$_GET['status']."'";
+            }
+            if (!empty($_GET['start_date']) && empty($_GET['end_date']) ) {
+                $where .= " and DATE(py.payment_date) = '".$_GET['start_date']."'";
+            }
+            if (!empty($_GET['end_date'])) {
+                if (!empty($_GET['start_date'])) {
+                    $where .= " and DATE(py.payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."'";
+                } else {
+                    $where .= " and DATE(py.payment_date) = '".$_GET['end_date']."'";
+                }
+            }
+        } else {
+            if (!empty($_GET['education'])) {
+                if (!empty($where)) {
+                    $where .= " and education_detail LIKE '%".$_GET['education']."%'";
+                } else {
+                    $where = "WHERE ";
+                    $where .= "education_detail LIKE '%".$_GET['education']."%'";
+                }
+            }
+
+            if (!empty($_GET['class'])) {
+                if (!empty($where)) {
+                    $where .= " and class_detail = '".$_GET['class']."'";
+                } else {
+                    $where = "WHERE ";
+                    $where .= " class_detail = '".$_GET['class']."'";
+                }
+            }
+            if (!empty($_GET['status'])) {
+                if (!empty($where)) {
+                    $where .= " and status = '".$_GET['status']."'";
+                } else {
+                    $where = "WHERE ";
+                    $where .= " status = '".$_GET['status']."'";
+                }
+            }
+            if (!empty($_GET['start_date']) && empty($_GET['end_date']) ) {
+
+                if (!empty($where)) {
+                    $where .= " and DATE(py.payment_date) = '".$_GET['start_date']."'";
+                } else {
+                    $where = "WHERE ";
+                    $where .= " DATE(py.payment_date) = '".$_GET['start_date']."'";
+                }
+            }
+            if (!empty($_GET['end_date'])) {
+                if (!empty($where)) {
+                    if (!empty($_GET['start_date'])) {
+                        $where .= " and DATE(py.payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."'";
+                    } else {
+                        $where .= " and DATE(py.payment_date) = '".$_GET['end_date']."'";
+                    }
+                } else {
+                    $where = "WHERE ";
+                    if (!empty($_GET['start_date'])) {
+                        $where .= "  DATE(py.payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."'";
+                    } else {
+                        $where .= " DATE(py.payment_date) = '".$_GET['end_date']."'";
+                    }
+                }
+            }
         }
         $order = "";
         if(isset($_GET['order']))
         {
             $order = "ORDER BY ".$this->column_order[$_GET['order']['0']['column']]." ". $_GET['order']['0']['dir'];
         }
+
+
         $limit = "";
         if($_GET['length'] != -1){
             $order = "ORDER BY ".$this->column_order[$_GET['order']['0']['column']]." ". $_GET['order']['0']['dir'];
@@ -74,7 +147,6 @@ class model_payment extends CI_Model {
                 '.$order.'
                 '.$limit.'
         ';
-        // print_R($q)
         $query = $this->db->query($q);
         return $query->result();
     }
@@ -93,8 +165,78 @@ class model_payment extends CI_Model {
                     $where .= $item." LIKE '%".$_GET['search']['value']."%' OR ";
                 }
             }
-        }
+            if (!empty($_GET['education'])) {
+                $where .= " and education_detail LIKE '%".$_GET['education']."%'";
+            }
 
+            if (!empty($_GET['class'])) {
+                $where .= " and class_detail = '".$_GET['class']."'";
+            }
+            if (!empty($_GET['status'])) {
+                $where .= " and status = '".$_GET['status']."'";
+            }
+            if (!empty($_GET['start_date']) && empty($_GET['end_date']) ) {
+                $where .= " and DATE(py.payment_date) = '".$_GET['start_date']."'";
+            }
+            if (!empty($_GET['end_date'])) {
+                if (!empty($_GET['start_date'])) {
+                    $where .= " and DATE(py.payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."' ";
+                } else {
+                    $where .= " and DATE(py.payment_date) = '".$_GET['end_date']."'";
+                }
+            }
+
+        } else {
+            if (!empty($_GET['education'])) {
+                if (!empty($where)) {
+                    $where .= " and education_detail LIKE '%".$_GET['education']."%'";
+                } else {
+                    $where = "WHERE ";
+                    $where .= "education_detail LIKE '%".$_GET['education']."%'";
+                }
+            }
+
+            if (!empty($_GET['class'])) {
+                if (!empty($where)) {
+                    $where .= " and class_detail = '".$_GET['class']."'";
+                } else {
+                    $where = "WHERE ";
+                    $where .= " class_detail = '".$_GET['class']."'";
+                }
+            }
+            if (!empty($_GET['status'])) {
+                if (!empty($where)) {
+                    $where .= " and status = '".$_GET['status']."'";
+                } else {
+                    $where = "WHERE ";
+                    $where .= " status = '".$_GET['status']."'";
+                }
+            }
+            if (!empty($_GET['start_date']) && empty($_GET['end_date'])) {
+                if (!empty($where)) {
+                    $where .= " and DATE(py.payment_date) = '".$_GET['start_date']."'";
+                } else {
+                    $where = "WHERE ";
+                    $where .= " DATE(py.payment_date) = '".$_GET['start_date']."'";
+                }
+            }
+            if (!empty($_GET['end_date'])) {
+                if (!empty($where)) {
+                    if (!empty($_GET['start_date'])) {
+                        $where .= " and DATE(py.payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."'";
+                    } else {
+                        $where .= " and DATE(py.payment_date) = '".$_GET['end_date']."'";
+                    }
+                } else {
+                    $where = "WHERE ";
+                    if (!empty($_GET['start_date'])) {
+                        $where .= " DATE(py.payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."' ";
+                    } else {
+                        $where .= " DATE(py.payment_date) = '".$_GET['end_date']."'";
+                    }
+                }
+            }
+        }
         $order = "";
         if(isset($_GET['order'])) // here order processing
         {
