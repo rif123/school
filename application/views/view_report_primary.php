@@ -38,17 +38,6 @@
                                                <th>Amount</th>
                                            </tr>
                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th>Education</th>
-                                                <th>NIS</th>
-                                                <th>Name</th>
-                                                <th>Class</th>
-                                                <th>Payment Date</th>
-                                                <th>PSB TK 2016</th>
-                                                <th>Amount</th>
-                                            </tr>
-                                        </tfoot>
                                     </table>
                                 </div><!-- /.box-header -->
                             </div><!-- /.box -->

@@ -22,9 +22,6 @@ class Report_primary extends CI_Controller {
         foreach ($list as $customers) {
             $group[$customers->std_id][] = $customers->price;
         }
-        // var_dump($_GET['status']);die;
-        // print_r($group['1122016051216355993']);die;
-        // print_r(array_sum($group['1122016051216355993']));die;
         foreach ($list as $customers) {
             $no++;
             if (!empty($_GET['status'])) {
@@ -42,7 +39,7 @@ class Report_primary extends CI_Controller {
                         $row[] = $customers->name;
                         $row[] = $customers->class_detail;
                         $row[] = date("d M Y",strtotime($customers->payment_date));
-                        $row[] = $customers->class_detail;
+                        $row[] = $customers->payment_detail;
                         $row[] = $customers->price;
                         $data[] = $row;
                     }
@@ -61,7 +58,7 @@ class Report_primary extends CI_Controller {
                         $row[] = $customers->name;
                         $row[] = $customers->class_detail;
                         $row[] = date("d M Y",strtotime($customers->payment_date));
-                        $row[] = $customers->class_detail;
+                        $row[] = $customers->payment_detail;
                         $row[] = $customers->price;
                         $data[] = $row;
                     }
@@ -74,7 +71,7 @@ class Report_primary extends CI_Controller {
                 $row[] = $customers->name;
                 $row[] = $customers->class_detail;
                 $row[] = date("d M Y",strtotime($customers->payment_date));
-                $row[] = $customers->class_detail;
+                $row[] = $customers->payment_detail;
                 $row[] = $customers->price;
                 $data[] = $row;
             }
