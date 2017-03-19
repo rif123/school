@@ -67,14 +67,6 @@ class model_payment extends CI_Model {
                     $where .= " class_detail = '".$_GET['class']."'";
                 }
             }
-            if (!empty($_GET['status'])) {
-                if (!empty($where)) {
-                    $where .= " and status = '".$_GET['status']."'";
-                } else {
-                    $where = "WHERE ";
-                    $where .= " status = '".$_GET['status']."'";
-                }
-            }
             if (!empty($_GET['start_date']) && empty($_GET['end_date']) ) {
 
                 if (!empty($where)) {
@@ -119,9 +111,13 @@ class model_payment extends CI_Model {
                 name,
                 class_detail,
                 py.payment_date,
-                sum(py.total) as price
-                from (
-                        select *  from (
+                sum(py.total) as price,
+		education_id,
+		payment_detail,
+		total_bayar,
+		std_id
+                 from (
+                        select *,pty.detail as payment_detail, pty.total  as total_bayar from (
                             Select
                                 std.nis,
                                 prd.detail as dtl,
@@ -131,7 +127,8 @@ class model_payment extends CI_Model {
                                 std.name, gdr.detail as "gender_detail",
                                 class.detail as class_detail,
                                 education.detail as education_detail,
-                                prd.detail as "period_detail"
+                                prd.detail as "period_detail",
+				std.student_id as std_id
                                         from student std
                                         LEFT JOIN education on std.education_id =  education.education_id
                                         LEFT JOIN class on std.class_id = class.class_id
@@ -147,6 +144,7 @@ class model_payment extends CI_Model {
                 '.$order.'
                 '.$limit.'
         ';
+        // print_r($q);die;
         $query = $this->db->query($q);
         return $query->result();
     }
@@ -171,9 +169,6 @@ class model_payment extends CI_Model {
 
             if (!empty($_GET['class'])) {
                 $where .= " and class_detail = '".$_GET['class']."'";
-            }
-            if (!empty($_GET['status'])) {
-                $where .= " and status = '".$_GET['status']."'";
             }
             if (!empty($_GET['start_date']) && empty($_GET['end_date']) ) {
                 $where .= " and DATE(py.payment_date) = '".$_GET['start_date']."'";
@@ -202,14 +197,6 @@ class model_payment extends CI_Model {
                 } else {
                     $where = "WHERE ";
                     $where .= " class_detail = '".$_GET['class']."'";
-                }
-            }
-            if (!empty($_GET['status'])) {
-                if (!empty($where)) {
-                    $where .= " and status = '".$_GET['status']."'";
-                } else {
-                    $where = "WHERE ";
-                    $where .= " status = '".$_GET['status']."'";
                 }
             }
             if (!empty($_GET['start_date']) && empty($_GET['end_date'])) {
@@ -243,38 +230,44 @@ class model_payment extends CI_Model {
             $order = "ORDER BY ".$this->column_order[$_GET['order']['0']['column']]." ". $_GET['order']['0']['dir'];
         }
         $q = '
-        select count(*) as  count from (
-            	select
-                        education_detail,
-                        nis,
-                        name,
-                        class_detail,
-                        py.payment_date,
-                        sum(py.total)as price
-            	from (
-            		select *  from (
-            			Select
-            				std.nis,
-            				prd.detail as dtl,std.period_id as prd,
-            				std.student_id,
-            				std.education_id as edc,
-            				std.name, gdr.detail as "gender_detail",
-            				class.detail as class_detail,
-            				education.detail as education_detail,
-            				prd.detail as "period_detail"
-            						from student std
-            						LEFT JOIN education on std.education_id =  education.education_id
-            						LEFT JOIN class on std.class_id = class.class_id
-            						join gender gdr on std.gender_id = gdr.gender_id
-            						join period prd on std.period_id = prd.period_id
-            		) as stdy
-            		JOIN payment_type as pty on stdy.prd = pty.period_id and pty.status = 1
-            	)  as kk
-            	JOIN payment  as py on kk.student_id = py.student_id and py.payment_type_id = kk.payment_type_id
+        select count(*) as count from (
+            select  education_detail,
+                nis,
+                name,
+                class_detail,
+                py.payment_date,
+                sum(py.total) as price,
+        		education_id,
+        		payment_detail,
+        		total_bayar,
+        		std_id
+                 from (
+                        select *,pty.detail as payment_detail, pty.total  as total_bayar from (
+                            Select
+                                std.nis,
+                                prd.detail as dtl,
+                                std.period_id as prd,
+                                std.student_id,
+                                std.education_id as edc,
+                                std.name, gdr.detail as "gender_detail",
+                                class.detail as class_detail,
+                                education.detail as education_detail,
+                                prd.detail as "period_detail",
+				std.student_id as std_id
+                                        from student std
+                                        LEFT JOIN education on std.education_id =  education.education_id
+                                        LEFT JOIN class on std.class_id = class.class_id
+                                        join gender gdr on std.gender_id = gdr.gender_id
+                                        join period prd on std.period_id = prd.period_id
+
+                        ) as stdy
+                        JOIN payment_type as pty on stdy.prd = pty.period_id and pty.status = 1
+                )  as kk
+                JOIN payment  as py on kk.student_id = py.student_id and py.payment_type_id = kk.payment_type_id
                 '.$where.'
-            	group by DATE(py.payment_date)
+                group by DATE(py.payment_date)
                 '.$order.'
-            ) as cnt
+        ) as countData
         ';
         $query = $this->db->query($q)->row();
         return $query->count;

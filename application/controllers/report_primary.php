@@ -18,26 +18,75 @@ class Report_primary extends CI_Controller {
         $list = $this->model_payment->getOtherMerge();
         $data = array();
         $no = $_GET['start'];
+        $group = array();
+        foreach ($list as $customers) {
+            $group[$customers->std_id][] = $customers->price;
+        }
+        // var_dump($_GET['status']);die;
+        // print_r($group['1122016051216355993']);die;
+        // print_r(array_sum($group['1122016051216355993']));die;
         foreach ($list as $customers) {
             $no++;
-            $row = array();
-            $row[] = $customers->education_detail;
-            $row[] = $customers->nis;
-            $row[] = $customers->name;
-            $row[] = $customers->class_detail;
-            $row[] = date("d M Y",strtotime($customers->payment_date));
-            $row[] = $customers->class_detail;
-            $row[] = $customers->price;
-            $data[] = $row;
+            if (!empty($_GET['status'])) {
+                if ($_GET['status'] == 'Lunas'){
+                    $pay = array_sum($group[$customers->std_id]);
+                    $status = false;
+                    $totalBayar = (int)$customers->total_bayar;
+                    if ($totalBayar  <= $pay){
+                        $status = true;
+                    }
+                    if ($status){
+                        $row = array();
+                        $row[] = $customers->education_detail;
+                        $row[] = $customers->nis;
+                        $row[] = $customers->name;
+                        $row[] = $customers->class_detail;
+                        $row[] = date("d M Y",strtotime($customers->payment_date));
+                        $row[] = $customers->class_detail;
+                        $row[] = $customers->price;
+                        $data[] = $row;
+                    }
+                } else {
+                    $pay = array_sum($group[$customers->std_id]);
+                    $status = false;
+                    $totalBayar = (int)$customers->total_bayar;
+                    if ($totalBayar  >= $pay){
+                        $status = true;
+                    }
+                    if ($status) {
+                        $no++;
+                        $row = array();
+                        $row[] = $customers->education_detail;
+                        $row[] = $customers->nis;
+                        $row[] = $customers->name;
+                        $row[] = $customers->class_detail;
+                        $row[] = date("d M Y",strtotime($customers->payment_date));
+                        $row[] = $customers->class_detail;
+                        $row[] = $customers->price;
+                        $data[] = $row;
+                    }
+                }
+            } else {
+                $no++;
+                $row = array();
+                $row[] = $customers->education_detail;
+                $row[] = $customers->nis;
+                $row[] = $customers->name;
+                $row[] = $customers->class_detail;
+                $row[] = date("d M Y",strtotime($customers->payment_date));
+                $row[] = $customers->class_detail;
+                $row[] = $customers->price;
+                $data[] = $row;
+            }
+
         }
         $output = array(
                         "draw" => $_GET['draw'],
                         "recordsTotal" => $no,
-                        "recordsFiltered" => $this->model_payment->getOtherMergeCount(),
+                        "recordsFiltered" => !empty($_GET['status']) ? count($data) :  $this->model_payment->getOtherMergeCount(),
                         "data" => $data,
                 );
-        // echo "<pre>";
-        // print_R($output);die;
+
         //output to json format
         echo json_encode($output);
     }

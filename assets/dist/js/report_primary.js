@@ -12,11 +12,6 @@ function ReportPrimary(){
 }
 
 function initReportPrimaryDT(globalUsername){
-    // $('#dt-report-primary').DataTable( {
-    //    "processing": true,
-    //    "serverSide": true,
-    //    "ajax": base_url+'report_primary/resourcesAllMerge'
-    // });
     var url = base_url+'report_primary/resourcesAllMerge';
         oTable = $('#dt-report-primary').dataTable({
             "processing": true,
