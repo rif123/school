@@ -47,10 +47,10 @@ class Report_primary extends CI_Controller {
                     $pay = array_sum($group[$customers->std_id]);
                     $status = false;
                     $totalBayar = (int)$customers->total_bayar;
-                    if ($totalBayar  >= $pay){
+                    if ($totalBayar  <= $pay){
                         $status = true;
                     }
-                    if ($status) {
+                    if (!$status) {
                         $no++;
                         $row = array();
                         $row[] = $customers->education_detail;
