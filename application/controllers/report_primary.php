@@ -16,54 +16,11 @@ class Report_primary extends CI_Controller {
 
     public function resourcesAllMerge(){
         $list = $this->model_payment->getOtherMerge();
+        // ECHO "<PRE>";
+        // print_r($list);die;
         $data = array();
         $no = $_GET['start'];
-        $group = array();
         foreach ($list as $customers) {
-            $group[$customers->std_id][] = $customers->price;
-        }
-        foreach ($list as $customers) {
-            $no++;
-            if (!empty($_GET['status'])) {
-                if ($_GET['status'] == 'Lunas'){
-                    $pay = array_sum($group[$customers->std_id]);
-                    $status = false;
-                    $totalBayar = (int)$customers->total_bayar;
-                    if ($totalBayar  <= $pay){
-                        $status = true;
-                    }
-                    if ($status){
-                        $row = array();
-                        $row[] = $customers->education_detail;
-                        $row[] = $customers->nis;
-                        $row[] = $customers->name;
-                        $row[] = $customers->class_detail;
-                        $row[] = date("d M Y",strtotime($customers->payment_date));
-                        $row[] = $customers->payment_detail;
-                        $row[] = $customers->price;
-                        $data[] = $row;
-                    }
-                } else {
-                    $pay = array_sum($group[$customers->std_id]);
-                    $status = false;
-                    $totalBayar = (int)$customers->total_bayar;
-                    if ($totalBayar  <= $pay){
-                        $status = true;
-                    }
-                    if (!$status) {
-                        $no++;
-                        $row = array();
-                        $row[] = $customers->education_detail;
-                        $row[] = $customers->nis;
-                        $row[] = $customers->name;
-                        $row[] = $customers->class_detail;
-                        $row[] = date("d M Y",strtotime($customers->payment_date));
-                        $row[] = $customers->payment_detail;
-                        $row[] = $customers->price;
-                        $data[] = $row;
-                    }
-                }
-            } else {
                 $no++;
                 $row = array();
                 $row[] = $customers->education_detail;
@@ -74,8 +31,6 @@ class Report_primary extends CI_Controller {
                 $row[] = $customers->payment_detail;
                 $row[] = $customers->price;
                 $data[] = $row;
-            }
-
         }
         $output = array(
                         "draw" => $_GET['draw'],

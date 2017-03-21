@@ -2,8 +2,8 @@
 
 class model_payment extends CI_Model {
     var $table = 'customers';
-    var $column_order = array('education_detail','nis','name','class_detail','payment_date','price', 'price'); //set column field database for datatable orderable
-    var $column_search = array('education_detail','nis','name','class_detail','payment_date','py.total', 'py.total'); //set column field database for datatable searchable
+    var $column_order = array('education_detail','nis','name','class_detail','payment_date','payment_detail', 'price'); //set column field database for datatable orderable
+    var $column_search = array('education_detail','nis','name','class_detail','payment_date','payment_detail', 'price'); //set column field database for datatable searchable
     var $order = array('id' => 'asc'); // default order
 
     public function insert($data) {
@@ -17,7 +17,6 @@ class model_payment extends CI_Model {
 
     public function getOtherMerge(){
         $where = "";
-        $where_status  = "";
         if ($_GET['search']['value']) {
             $where = "WHERE ";
             $numItems = count($this->column_search);
@@ -38,16 +37,16 @@ class model_payment extends CI_Model {
                 $where .= " and class_detail = '".$_GET['class']."'";
             }
             if (!empty($_GET['status'])) {
-                    $where_status = " where statusBayar = '".$_GET['status']."' ";
+                $where .= " and status = '".$_GET['status']."'";
             }
             if (!empty($_GET['start_date']) && empty($_GET['end_date']) ) {
                 $where .= " and DATE(py.payment_date) = '".$_GET['start_date']."'";
             }
             if (!empty($_GET['end_date'])) {
                 if (!empty($_GET['start_date'])) {
-                    $where .= " and DATE(py.payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."'";
+                    $where .= " and DATE(payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."'";
                 } else {
-                    $where .= " and DATE(py.payment_date) = '".$_GET['end_date']."'";
+                    $where .= " and DATE(payment_date) = '".$_GET['end_date']."'";
                 }
             }
         } else {
@@ -59,7 +58,14 @@ class model_payment extends CI_Model {
                     $where .= "education_detail LIKE '%".$_GET['education']."%'";
                 }
             }
-
+            if (!empty($_GET['status'])) {
+                if (!empty($where)) {
+                    $where .= " and status = '".$_GET['status']."'";
+                } else {
+                    $where = "WHERE ";
+                    $where .= " status = '".$_GET['status']."'";
+                }
+            }
             if (!empty($_GET['class'])) {
                 if (!empty($where)) {
                     $where .= " and class_detail = '".$_GET['class']."'";
@@ -71,25 +77,25 @@ class model_payment extends CI_Model {
             if (!empty($_GET['start_date']) && empty($_GET['end_date']) ) {
 
                 if (!empty($where)) {
-                    $where .= " and DATE(py.payment_date) = '".$_GET['start_date']."'";
+                    $where .= " and DATE(payment_date) = '".$_GET['start_date']."'";
                 } else {
                     $where = "WHERE ";
-                    $where .= " DATE(py.payment_date) = '".$_GET['start_date']."'";
+                    $where .= " DATE(payment_date) = '".$_GET['start_date']."'";
                 }
             }
             if (!empty($_GET['end_date'])) {
                 if (!empty($where)) {
                     if (!empty($_GET['start_date'])) {
-                        $where .= " and DATE(py.payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."'";
+                        $where .= " and DATE(payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."'";
                     } else {
-                        $where .= " and DATE(py.payment_date) = '".$_GET['end_date']."'";
+                        $where .= " and DATE(payment_date) = '".$_GET['end_date']."'";
                     }
                 } else {
                     $where = "WHERE ";
                     if (!empty($_GET['start_date'])) {
-                        $where .= "  DATE(py.payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."'";
+                        $where .= "  DATE(payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."'";
                     } else {
-                        $where .= " DATE(py.payment_date) = '".$_GET['end_date']."'";
+                        $where .= " DATE(payment_date) = '".$_GET['end_date']."'";
                     }
                 }
             }
@@ -107,60 +113,62 @@ class model_payment extends CI_Model {
             $limit  = "LIMIT ".$_GET['start'].",".$_GET['length'];
         }
         $q = '
-        select * from (
-        select *, IF(baru_terbayar >= total_bayar, "Lunas", "Proses") as statusBayar
-            from (
-            	select  education_detail,
-                            nis,
-                            name,
-                            class_detail,
-                            py.payment_date,
-                            sum(py.total) as price,
-            		education_id,
-            		payment_detail,
-            		total_bayar,
-            		std_id,
-            		SUM(py.total) AS total,
-            		period_id,
-            		pty_id,
-            		status,
-            		(select SUM(py.total)  from payment as py
-            			JOIN payment_type  ON py.payment_type_id = payment_type.payment_type_id and payment_type.status = 1
-            			where student_id = std_id
-            		) as baru_terbayar
-                             from (
-                                    select
-            				*,pty.detail as payment_detail,
-            				pty.total  as total_bayar, payment_type_id as pty_id
-            				from (
-            				    Select
-            						std.nis,
-            						prd.detail as dtl,
-            						std.period_id as prd,
-            						std.student_id,
-            						std.education_id as edc,
-            						std.name, gdr.detail as "gender_detail",
-            						class.detail as class_detail,
-            						education.detail as education_detail,
-            						prd.detail as "period_detail",
-            						std.student_id as std_id
-            					from student std
-            						LEFT JOIN education on std.education_id =  education.education_id
-            						LEFT JOIN class on std.class_id = class.class_id
-            						join gender gdr on std.gender_id = gdr.gender_id
-            						join period prd on std.period_id = prd.period_id
+        SELECT * from (
+        SELECT nis, name, education_detail, class_detail, payment_date,payment_detail, total_bayar, price, baru_terbayar,  IF(baru_terbayar  >= total_bayar, "Lunas", "Proses") as status
 
-            				) as stdy
-                                    JOIN payment_type as pty on stdy.prd = pty.period_id and pty.status = 1
-                            )  as kk
-            		JOIN payment  as py on kk.student_id = py.student_id and py.payment_type_id = kk.payment_type_id
-            	       '.$where.'
-            		group by DATE(py.payment_date)
-                    '.$order.'
-                    '.$limit.'
-                ) as hh
-            ) as allQuery
-            '.$where_status.'
+        FROM (
+SELECT
+   py.total AS price,
+   (SELECT Sum(py.total)
+    FROM   payment AS py
+           JOIN payment_type
+             ON py.payment_type_id = payment_type.payment_type_id
+                AND payment_type.status = 1
+    WHERE  student_id = std_id) AS baru_terbayar,
+name, total_bayar, education_detail, nis, class_detail,
+py.payment_date,payment_detail
+FROM   (SELECT student_id,
+           payment_type_id,
+           NAME,
+           education_id AS eduID,
+           std_id,
+           prd,
+           pty.detail   AS payment_detail,
+           pty.total    AS total_bayar,
+       nis,
+    class_detail,
+       education_detail
+    FROM   (SELECT std.nis,
+                   prd.detail       AS dtl,
+                   std.period_id    AS prd,
+                   std.student_id,
+                   std.education_id AS edc,
+                   std.name,
+                   gdr.detail       AS "gender_detail",
+                   class.detail     AS class_detail,
+                   education.detail AS education_detail,
+                   prd.detail       AS "period_detail",
+                   std.student_id   AS std_id
+            FROM   student std
+                   LEFT JOIN education
+                          ON std.education_id = education.education_id
+                   LEFT JOIN class
+                          ON std.class_id = class.class_id
+                   JOIN gender gdr
+                     ON std.gender_id = gdr.gender_id
+                   JOIN period prd
+                     ON std.period_id = prd.period_id) AS stdy
+           JOIN payment_type AS pty
+             ON stdy.prd = pty.period_id
+                AND pty.status = 1) AS kk
+   JOIN payment AS py
+     ON kk.student_id = py.student_id
+        AND py.payment_type_id = kk.payment_type_id
+        ) AS ALLQUERY
+) as ALLPAYMENT
+    '.$where.'
+    '.$order.'
+    '.$limit.'
         ';
         $query = $this->db->query($q);
         return $query->result();
@@ -168,7 +176,6 @@ class model_payment extends CI_Model {
 
     public function getOtherMergeCount(){
         $where = "";
-        $where_status = "";
         if ($_GET['search']['value']) {
             $where = "WHERE ";
             $numItems = count($this->column_search);
@@ -188,17 +195,14 @@ class model_payment extends CI_Model {
             if (!empty($_GET['class'])) {
                 $where .= " and class_detail = '".$_GET['class']."'";
             }
-            if (!empty($_GET['status'])) {
-                    $where_status = " where statusBayar = '".$_GET['status']."' ";
-            }
             if (!empty($_GET['start_date']) && empty($_GET['end_date']) ) {
-                $where .= " and DATE(py.payment_date) = '".$_GET['start_date']."'";
+                $where .= " and DATE(payment_date) = '".$_GET['start_date']."'";
             }
             if (!empty($_GET['end_date'])) {
                 if (!empty($_GET['start_date'])) {
-                    $where .= " and DATE(py.payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."' ";
+                    $where .= " and DATE(payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."' ";
                 } else {
-                    $where .= " and DATE(py.payment_date) = '".$_GET['end_date']."'";
+                    $where .= " and DATE(payment_date) = '".$_GET['end_date']."'";
                 }
             }
 
@@ -220,30 +224,27 @@ class model_payment extends CI_Model {
                     $where .= " class_detail = '".$_GET['class']."'";
                 }
             }
-            if (!empty($_GET['status'])) {
-                    $where_status = " where statusBayar = '".$_GET['status']."' ";
-            }
             if (!empty($_GET['start_date']) && empty($_GET['end_date'])) {
                 if (!empty($where)) {
-                    $where .= " and DATE(py.payment_date) = '".$_GET['start_date']."'";
+                    $where .= " and DATE(payment_date) = '".$_GET['start_date']."'";
                 } else {
                     $where = "WHERE ";
-                    $where .= " DATE(py.payment_date) = '".$_GET['start_date']."'";
+                    $where .= " DATE(payment_date) = '".$_GET['start_date']."'";
                 }
             }
             if (!empty($_GET['end_date'])) {
                 if (!empty($where)) {
                     if (!empty($_GET['start_date'])) {
-                        $where .= " and DATE(py.payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."'";
+                        $where .= " and DATE(payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."'";
                     } else {
-                        $where .= " and DATE(py.payment_date) = '".$_GET['end_date']."'";
+                        $where .= " and DATE(payment_date) = '".$_GET['end_date']."'";
                     }
                 } else {
                     $where = "WHERE ";
                     if (!empty($_GET['start_date'])) {
-                        $where .= " DATE(py.payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."' ";
+                        $where .= " DATE(payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."' ";
                     } else {
-                        $where .= " DATE(py.payment_date) = '".$_GET['end_date']."'";
+                        $where .= " DATE(payment_date) = '".$_GET['end_date']."'";
                     }
                 }
             }
@@ -254,65 +255,64 @@ class model_payment extends CI_Model {
             $order = "ORDER BY ".$this->column_order[$_GET['order']['0']['column']]." ". $_GET['order']['0']['dir'];
         }
         $q = '
-        select count(*) as count from (
-            select *  from (
-                select *, IF(baru_terbayar >= total_bayar, "Lunas", "Proses") as statusBayar
-                from (
-                	select  education_detail,
-                                nis,
-                                name,
-                                class_detail,
-                                py.payment_date,
-                                sum(py.total) as price,
-                		education_id,
-                		payment_detail,
-                		total_bayar,
-                		std_id,
-                		SUM(py.total) AS total,
-                		period_id,
-                		pty_id,
-                		status,
-                		(select SUM(py.total)  from payment as py
-                			JOIN payment_type  ON py.payment_type_id = payment_type.payment_type_id and payment_type.status = 1
-                			where student_id = std_id
-                		) as baru_terbayar
-                                 from (
-                                        select
-                				*,pty.detail as payment_detail,
-                				pty.total  as total_bayar, payment_type_id as pty_id
-                				from (
-                				    Select
-                						std.nis,
-                						prd.detail as dtl,
-                						std.period_id as prd,
-                						std.student_id,
-                						std.education_id as edc,
-                						std.name, gdr.detail as "gender_detail",
-                						class.detail as class_detail,
-                						education.detail as education_detail,
-                						prd.detail as "period_detail",
-                						std.student_id as std_id
-                					from student std
-                						LEFT JOIN education on std.education_id =  education.education_id
-                						LEFT JOIN class on std.class_id = class.class_id
-                						join gender gdr on std.gender_id = gdr.gender_id
-                						join period prd on std.period_id = prd.period_id
+        SELECT * from (
+        SELECT nis, name, education_detail, class_detail, payment_date,payment_detail, total_bayar, price, baru_terbayar,   IF(baru_terbayar  >= total_bayar, "Lunas", "Proses") as status
+        FROM (
+SELECT
+   py.total AS price,
+   (SELECT Sum(py.total)
+    FROM   payment AS py
+           JOIN payment_type
+             ON py.payment_type_id = payment_type.payment_type_id
+                AND payment_type.status = 1
+    WHERE  student_id = std_id) AS baru_terbayar,
+name, total_bayar, education_detail, nis, class_detail,
+py.payment_date,payment_detail
+FROM   (SELECT student_id,
+           payment_type_id,
+           NAME,
+           education_id AS eduID,
+           std_id,
+           prd,
+           pty.detail   AS payment_detail,
+           pty.total    AS total_bayar,
+       nis,
+    class_detail,
+       education_detail
+    FROM   (SELECT std.nis,
+                   prd.detail       AS dtl,
+                   std.period_id    AS prd,
+                   std.student_id,
+                   std.education_id AS edc,
+                   std.NAME,
+                   gdr.detail       AS "gender_detail",
+                   class.detail     AS class_detail,
+                   education.detail AS education_detail,
+                   prd.detail       AS "period_detail",
+                   std.student_id   AS std_id
+            FROM   student std
+                   LEFT JOIN education
+                          ON std.education_id = education.education_id
+                   LEFT JOIN class
+                          ON std.class_id = class.class_id
+                   JOIN gender gdr
+                     ON std.gender_id = gdr.gender_id
+                   JOIN period prd
+                     ON std.period_id = prd.period_id) AS stdy
+           JOIN payment_type AS pty
+             ON stdy.prd = pty.period_id
+                AND pty.status = 1) AS kk
+   JOIN payment AS py
+     ON kk.student_id = py.student_id
+        AND py.payment_type_id = kk.payment_type_id
 
-                				) as stdy
-                                        JOIN payment_type as pty on stdy.prd = pty.period_id and pty.status = 1
-                                )  as kk
-                		JOIN payment  as py on kk.student_id = py.student_id and py.payment_type_id = kk.payment_type_id
-                	       '.$where.'
-                		group by DATE(py.payment_date)
-                        '.$order.'
-                    ) as hh
-                ) as allQuery
-                '.$where_status.'
-        ) as countData
-
+        ) AS ALLQUERY
+) as ALLPAYMENT
+    '.$where.'
+    '.$order.'
         ';
-        $query = $this->db->query($q)->row();
-        return $query->count;
+        $count = $this->db->query($q)->num_rows();
+        return $count;
     }
 
 
