@@ -43,6 +43,7 @@ class Report_primary extends CI_Controller {
 
     public function resourceExportExcel(){
         $_GET['search']['value'] = array();
+        
         $list = $this->model_payment->exportExcelNew();
         $listCountEducation = $this->model_payment->exportExcelNewCount();
 

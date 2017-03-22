@@ -38,8 +38,8 @@ function initReportPrimaryDT(globalUsername){
             "order": [[1, 'asc']]
         });
 }
-function exportExcel(){
-        window.location = urlExcel;
+function exportExcel(education, classes,status, start_date, end_date){
+        window.location = urlExcel+"?education="+education+"&classes="+classes+"&status="+status+"&start_date="+start_date+"&end_date="+end_date;
 }
 function primaryReportPrimaryFilter(){
     $('#form-primary-filter').submit(function (event) {
@@ -68,7 +68,12 @@ function primaryReportPrimaryFilter(){
                                 text: '<i class="fa fa-print"></i> Export excel',
                                 className: 'btn btn-default',
                                 action: function ( e, dt, node, config ) {
-                                        exportExcel();
+                                    // var education = $('#form-primary-filter select[name=education]').val();
+                                    // var classes = $('#form-primary-filter select[name=class]').val();
+                                    // var status = $('#form-primary-filter select[name=status]').val();
+                                    // var start_date = $('#form-primary-filter input[name=start_date]').val();
+                                    // var end_date = $('#form-primary-filter input[name=finish_date]').val();
+                                    exportExcel(education, classes,status, start_date, end_date);
                                 }
                             }
                 ],

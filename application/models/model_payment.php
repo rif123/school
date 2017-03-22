@@ -40,7 +40,7 @@ class model_payment extends CI_Model {
                 $where .= " and status = '".$_GET['status']."'";
             }
             if (!empty($_GET['start_date']) && empty($_GET['end_date']) ) {
-                $where .= " and DATE(py.payment_date) = '".$_GET['start_date']."'";
+                $where .= " and DATE(payment_date) = '".$_GET['start_date']."'";
             }
             if (!empty($_GET['end_date'])) {
                 if (!empty($_GET['start_date'])) {
@@ -174,6 +174,56 @@ FROM   (SELECT student_id,
         return $query->result();
     }
     public function exportExcelNew(){
+
+        $where = "";
+        if (!empty($_GET['education']) && $_GET['education'] != 'undefined') {
+            if (!empty($where)) {
+                $where .= " and education_detail LIKE '%".$_GET['education']."%'";
+            } else {
+                $where = "WHERE ";
+                $where .= "education_detail LIKE '%".$_GET['education']."%'";
+            }
+        }
+        if (!empty($_GET['status']) && $_GET['status'] != 'undefined') {
+            if (!empty($where)) {
+                $where .= " and status = '".$_GET['status']."'";
+            } else {
+                $where = "WHERE ";
+                $where .= " status = '".$_GET['status']."'";
+            }
+        }
+        if (!empty($_GET['classes']) && $_GET['classes'] != 'undefined') {
+            if (!empty($where)) {
+                $where .= " and class_detail = '".$_GET['classes']."'";
+            } else {
+                $where = "WHERE ";
+                $where .= " class_detail = '".$_GET['classes']."'";
+            }
+        }
+        if (!empty($_GET['start_date']) && empty($_GET['end_date'])  && $_GET['end_date'] != 'undefined' && $_GET['end_date'] != 'undefined' ) {
+            if (!empty($where)) {
+                $where .= " and DATE(payment_date) = '".$_GET['start_date']."'";
+            } else {
+                $where = "WHERE ";
+                $where .= " DATE(payment_date) = '".$_GET['start_date']."'";
+            }
+        }
+        if (!empty($_GET['end_date']) && $_GET['end_date'] != 'undefined') {
+            if (!empty($where)) {
+                if (!empty($_GET['start_date'])) {
+                    $where .= " and DATE(payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."'";
+                } else {
+                    $where .= " and DATE(payment_date) = '".$_GET['end_date']."'";
+                }
+            } else {
+                $where = "WHERE ";
+                if (!empty($_GET['start_date']) && $_GET['start_date'] != 'undefined') {
+                    $where .= "  DATE(payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."'";
+                } else {
+                    $where .= " DATE(payment_date) = '".$_GET['end_date']."'";
+                }
+            }
+        }
         $q = '
         SELECT * from (
         SELECT std_id, nis, name, education_detail, class_detail, payment_date,payment_detail, total_bayar, price, baru_terbayar,  IF(baru_terbayar  >= total_bayar, "Lunas", "Proses") as status
@@ -227,16 +277,66 @@ FROM   (SELECT student_id,
         AND py.payment_type_id = kk.payment_type_id
         ) AS ALLQUERY
 GROUP BY std_id
-) as ALLPAYMENT';
-
+) as ALLPAYMENT
+'.$where.'
+';
     $query = $this->db->query($q);
     return $query->result_array();
     }
 
     public function exportExcelNewCount() {
+        $where = "";
+        if (!empty($_GET['education']) && $_GET['education'] != 'undefined') {
+            if (!empty($where)) {
+                $where .= " and education_detail LIKE '%".$_GET['education']."%'";
+            } else {
+                $where = "WHERE ";
+                $where .= "education_detail LIKE '%".$_GET['education']."%'";
+            }
+        }
+        if (!empty($_GET['status']) && $_GET['status'] != 'undefined') {
+            if (!empty($where)) {
+                $where .= " and status = '".$_GET['status']."'";
+            } else {
+                $where = "WHERE ";
+                $where .= " status = '".$_GET['status']."'";
+            }
+        }
+        if (!empty($_GET['classes']) && $_GET['classes'] != 'undefined') {
+            if (!empty($where)) {
+                $where .= " and class_detail = '".$_GET['classes']."'";
+            } else {
+                $where = "WHERE ";
+                $where .= " class_detail = '".$_GET['classes']."'";
+            }
+        }
+        if (!empty($_GET['start_date']) && empty($_GET['end_date'])  && $_GET['end_date'] != 'undefined' && $_GET['end_date'] != 'undefined' ) {
+            if (!empty($where)) {
+                $where .= " and DATE(payment_date) = '".$_GET['start_date']."'";
+            } else {
+                $where = "WHERE ";
+                $where .= " DATE(payment_date) = '".$_GET['start_date']."'";
+            }
+        }
+        if (!empty($_GET['end_date']) && $_GET['end_date'] != 'undefined') {
+            if (!empty($where)) {
+                if (!empty($_GET['start_date'])) {
+                    $where .= " and DATE(payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."'";
+                } else {
+                    $where .= " and DATE(payment_date) = '".$_GET['end_date']."'";
+                }
+            } else {
+                $where = "WHERE ";
+                if (!empty($_GET['start_date']) && $_GET['start_date'] != 'undefined') {
+                    $where .= "  DATE(payment_date)   BETWEEN '".$_GET['start_date']."' AND '".$_GET['end_date']."'";
+                } else {
+                    $where .= " DATE(payment_date) = '".$_GET['end_date']."'";
+                }
+            }
+        }
         $q = "
         SELECT * from (
-        SELECT std_id, nis, name, count(education_detail) as qty,education_detail,  class_detail, payment_date,payment_detail, total_bayar, price, sum(baru_terbayar) as brty
+        SELECT std_id, nis, name, count(education_detail) as qty,education_detail,  class_detail, payment_date,payment_detail, total_bayar, price, sum(baru_terbayar) as brty, IF(baru_terbayar  >= total_bayar, 'Lunas', 'Proses') as status
         FROM (
 SELECT
    py.total AS price,
@@ -287,7 +387,9 @@ FROM   (SELECT student_id,
         AND py.payment_type_id = kk.payment_type_id
         ) AS ALLQUERY
 GROUP BY education_detail
-) as ALLPAYMENT";
+) as ALLPAYMENT
+    ".$where."
+";
 $query = $this->db->query($q);
 return $query->result_array();
     }
