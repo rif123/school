@@ -68,7 +68,7 @@ function primaryReportPrimaryFilter(){
                                 text: '<i class="fa fa-print"></i> Export excel',
                                 className: 'btn btn-default',
                                 action: function ( e, dt, node, config ) {
-
+                                        exportExcel();
                                 }
                             }
                 ],
