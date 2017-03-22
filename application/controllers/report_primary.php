@@ -16,8 +16,6 @@ class Report_primary extends CI_Controller {
 
     public function resourcesAllMerge(){
         $list = $this->model_payment->getOtherMerge();
-        // ECHO "<PRE>";
-        // print_r($list);die;
         $data = array();
         $no = $_GET['start'];
         foreach ($list as $customers) {
@@ -35,12 +33,22 @@ class Report_primary extends CI_Controller {
         $output = array(
                         "draw" => $_GET['draw'],
                         "recordsTotal" => $no,
-                        "recordsFiltered" => !empty($_GET['status']) ? count($data) :  $this->model_payment->getOtherMergeCount(),
+                        "recordsFiltered" => $this->model_payment->getOtherMergeCount(),
                         "data" => $data,
                 );
 
         //output to json format
         echo json_encode($output);
+    }
+
+    public function resourceExportExcel(){
+        $_GET['search']['value'] = array();
+        $list = $this->model_payment->exportExcelNew();
+        $listCountEducation = $this->model_payment->exportExcelNewCount();
+
+        $this->parser_data['listData'] =$list;
+        $this->parser_data['listCountEducation'] =$listCountEducation;
+        $this->load->view("report_primary_excel", $this->parser_data);
     }
 
 

@@ -1,7 +1,7 @@
 var dt_report_primary = null;
 var oTable = null;
 var url  = base_url+'report_primary/resourcesAllMerge';
-
+var urlExcel = base_url+'report_primary/resourceExportExcel';
 function ReportPrimary(){
     this.initDT = initReportPrimaryDT;
     this.getClass = getReportPrimaryClass;
@@ -13,6 +13,7 @@ function ReportPrimary(){
 
 function initReportPrimaryDT(globalUsername){
     var url = base_url+'report_primary/resourcesAllMerge';
+
         oTable = $('#dt-report-primary').dataTable({
             "processing": true,
             "serverSide": true,
@@ -27,9 +28,9 @@ function initReportPrimaryDT(globalUsername){
                         },
                         {
                             text: '<i class="fa fa-print"></i> Export excel',
-                            className: 'btn btn-default',
+                            className: 'btn btn-default customerSearchButton',
                             action: function ( e, dt, node, config ) {
-
+                                exportExcel();
                             }
                         }
             ],
@@ -37,7 +38,9 @@ function initReportPrimaryDT(globalUsername){
             "order": [[1, 'asc']]
         });
 }
-
+function exportExcel(){
+        window.location = urlExcel;
+}
 function primaryReportPrimaryFilter(){
     $('#form-primary-filter').submit(function (event) {
         event.preventDefault();

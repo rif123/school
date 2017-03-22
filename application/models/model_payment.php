@@ -173,7 +173,124 @@ FROM   (SELECT student_id,
         $query = $this->db->query($q);
         return $query->result();
     }
+    public function exportExcelNew(){
+        $q = '
+        SELECT * from (
+        SELECT std_id, nis, name, education_detail, class_detail, payment_date,payment_detail, total_bayar, price, baru_terbayar,  IF(baru_terbayar  >= total_bayar, "Lunas", "Proses") as status
+        FROM (
+SELECT
+   py.total AS price,
+   (SELECT Sum(py.total)
+    FROM   payment AS py
+           JOIN payment_type
+             ON py.payment_type_id = payment_type.payment_type_id
+                AND payment_type.status = 1
+    WHERE  student_id = std_id) AS baru_terbayar,
+name, total_bayar, education_detail, nis, class_detail,
+py.payment_date,payment_detail,std_id
+FROM   (SELECT student_id,
+           payment_type_id,
+           NAME,
+           education_id AS eduID,
+           std_id,
+           prd,
+           pty.detail   AS payment_detail,
+           pty.total    AS total_bayar,
+       nis,
+    class_detail,
+       education_detail
+    FROM   (SELECT std.nis,
+                   prd.detail       AS dtl,
+                   std.period_id    AS prd,
+                   std.student_id,
+                   std.education_id AS edc,
+                   std.name,
+                   gdr.detail       AS "gender_detail",
+                   class.detail     AS class_detail,
+                   education.detail AS education_detail,
+                   prd.detail       AS "period_detail",
+                   std.student_id   AS std_id
+            FROM   student std
+                   LEFT JOIN education
+                          ON std.education_id = education.education_id
+                   LEFT JOIN class
+                          ON std.class_id = class.class_id
+                   JOIN gender gdr
+                     ON std.gender_id = gdr.gender_id
+                   JOIN period prd
+                     ON std.period_id = prd.period_id) AS stdy
+           JOIN payment_type AS pty
+             ON stdy.prd = pty.period_id
+                AND pty.status = 1) AS kk
+   JOIN payment AS py
+     ON kk.student_id = py.student_id
+        AND py.payment_type_id = kk.payment_type_id
+        ) AS ALLQUERY
+GROUP BY std_id
+) as ALLPAYMENT';
 
+    $query = $this->db->query($q);
+    return $query->result_array();
+    }
+
+    public function exportExcelNewCount() {
+        $q = "
+        SELECT * from (
+        SELECT std_id, nis, name, count(education_detail) as qty,education_detail,  class_detail, payment_date,payment_detail, total_bayar, price, sum(baru_terbayar) as brty
+        FROM (
+SELECT
+   py.total AS price,
+   (SELECT Sum(py.total)
+    FROM   payment AS py
+           JOIN payment_type
+             ON py.payment_type_id = payment_type.payment_type_id
+                AND payment_type.status = 1
+    WHERE  student_id = std_id) AS baru_terbayar,
+name, total_bayar, education_detail, nis, class_detail,
+py.payment_date,payment_detail,std_id
+FROM   (SELECT student_id,
+           payment_type_id,
+           NAME,
+           education_id AS eduID,
+           std_id,
+           prd,
+           pty.detail   AS payment_detail,
+           pty.total    AS total_bayar,
+       nis,
+    class_detail,
+       education_detail
+    FROM   (SELECT std.nis,
+                   prd.detail       AS dtl,
+                   std.period_id    AS prd,
+                   std.student_id,
+                   std.education_id AS edc,
+                   std.name,
+                   gdr.detail       AS 'gender_detail',
+                   class.detail     AS class_detail,
+                   education.detail AS education_detail,
+                   prd.detail       AS 'period_detail',
+                   std.student_id   AS std_id
+            FROM   student std
+                   LEFT JOIN education
+                          ON std.education_id = education.education_id
+                   LEFT JOIN class
+                          ON std.class_id = class.class_id
+                   JOIN gender gdr
+                     ON std.gender_id = gdr.gender_id
+                   JOIN period prd
+                     ON std.period_id = prd.period_id) AS stdy
+           JOIN payment_type AS pty
+             ON stdy.prd = pty.period_id
+                AND pty.status = 1) AS kk
+   JOIN payment AS py
+     ON kk.student_id = py.student_id
+        AND py.payment_type_id = kk.payment_type_id
+        ) AS ALLQUERY
+GROUP BY education_detail
+) as ALLPAYMENT";
+$query = $this->db->query($q);
+return $query->result_array();
+    }
     public function getOtherMergeCount(){
         $where = "";
         if ($_GET['search']['value']) {
@@ -310,7 +427,7 @@ FROM   (SELECT student_id,
 ) as ALLPAYMENT
     '.$where.'
     '.$order.'
-        ';
+';
         $count = $this->db->query($q)->num_rows();
         return $count;
     }
