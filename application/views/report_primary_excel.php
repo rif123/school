@@ -24,13 +24,17 @@ header("Expires: 0");
     <?php
         $qtyBayar = "";
         foreach ($listCountEducation as $k => $v) {
-            echo "<tr>";
-                echo "<td>PSB</td>";
-                echo "<td>".$v['education_detail']."</td>";
-                echo "<td >".$v['qty']."</td>";
-                echo "<td>".$v['brty']."</td>";
-            echo "</tr>";
-            $qtyBayar += $v['brty'];
+                echo "<tr>";
+                    echo "<td>PSB</td>";
+                    echo "<td>".$k."</td>";
+                    echo "<td >".count($v)."</td>";
+                    $total = 0;
+                    foreach ($v as $ky => $vl) {
+                        $total += $vl['price'];
+                    }
+                    echo "<td>".$total."</td>";
+                echo "</tr>";
+            $qtyBayar += $total;
         }
         echo "<tr>";
             echo "<td colspan='3' align='center'  style='font-size:15px'><b>Total</b></td>";
@@ -45,9 +49,9 @@ header("Expires: 0");
                     echo "<td>".$value['name']."</td>";
                     echo "<td>".$value['education_detail']."</td>";
                     echo "<td ></td>";
-                    echo "<td>".$value['baru_terbayar']."</td>";
+                    echo "<td>".$value['price']."</td>";
                 echo "</tr>";
-                $sumBayar += $value['baru_terbayar'];
+                $sumBayar += $value['price'];
             }
             echo "<tr>";
                 echo "<td colspan='3' align='center' style='font-size:15px'><b>Total</b></td>";
